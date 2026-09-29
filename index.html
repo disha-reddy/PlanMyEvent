@@ -1,0 +1,1725 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PlanMyEvent — Tampa Event Vendor Marketplace</title>
+<meta name="description" content="PlanMyEvent matches Tampa Bay hosts with verified event vendors through algorithmic matching, transparent pricing, and escrow-protected bookings." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================= RESET & BASE ============================= */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  color: #2B2119;
+  background-color: #FBF7F2;
+  background-image:
+    radial-gradient(ellipse 900px 620px at 6% -8%, rgba(217,98,47,0.10), transparent 58%),
+    radial-gradient(ellipse 780px 560px at 98% 2%, rgba(201,162,39,0.13), transparent 55%),
+    radial-gradient(ellipse 700px 520px at 55% 30%, rgba(180,72,111,0.06), transparent 60%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+img { max-width: 100%; }
+button { font-family: inherit; }
+:root{
+  --coral:#D9622F; --coral-dark:#B84F1E; --gold:#C9A227; --plum:#B4486F; --success:#5E7F5E; --warn:#B8863A; --danger:#B23A3A;
+  --text:#2B2119; --text-muted:#8a7a6c; --surface:#ffffff; --bg:#FBF7F2;
+  --font-head:'Fraunces', serif; --font-body:'Inter', sans-serif;
+  --border-thin:1px solid #ece3d8; --divider:#e7ddd0;
+  --shadow-sm:0 1px 3px rgba(43,33,25,0.06); --shadow-md:0 14px 30px rgba(43,33,25,0.13); --shadow-lg:0 22px 50px rgba(43,33,25,0.20);
+}
+
+/* ============================= SLIM PERSISTENT NAV ============================= */
+.app-nav {
+  position: sticky; top: 0; z-index: 40;
+  background: rgba(251,247,242,0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: var(--border-thin);
+}
+.app-nav-inner { max-width: 1080px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.logo-badge { width: 34px; height: 34px; border-radius: 11px; background: linear-gradient(135deg, var(--coral), var(--gold)); display:flex; align-items:center; justify-content:center; color:#fff; font-family: var(--font-head); font-weight:700; font-size:16px; flex-shrink:0; box-shadow: 0 4px 10px rgba(217,98,47,0.30); }
+.wordmark { font-family: var(--font-head); font-weight: 700; font-size: 18px; letter-spacing: -0.01em; color: var(--text); }
+.role-tabs { display: flex; gap: 4px; background: #f2ebe1; padding: 4px; border-radius: 999px; border: var(--border-thin); }
+.role-tab { font-size: 12px; font-weight: 700; padding: 8px 14px; border-radius: 999px; color: #a2917f; background: transparent; border: none; cursor: pointer; transition: all .15s ease; display:flex; align-items:center; gap:6px; }
+.role-tab.active { background: #fff; color: var(--coral-dark); box-shadow: var(--shadow-sm); }
+.role-tab .req-dot { width:5px; height:5px; border-radius:50%; background: var(--coral); }
+
+/* ============================= LAYOUT ============================= */
+.stage { padding: 32px 20px 90px; display: flex; justify-content: center; }
+.stage-inner { width: 100%; max-width: 1080px; }
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+/* ============================= HERO (Host landing only) ============================= */
+.hero { position: relative; overflow: hidden; border-radius: 22px; padding: 18px 24px 22px; margin-bottom: 30px;
+  background: linear-gradient(120deg, #E1682F 0%, #D9622F 32%, #CB6B45 58%, #C9A227 100%);
+  box-shadow: 0 10px 24px rgba(184,79,30,0.20); color:#fff; }
+.hero .blob { position:absolute; border-radius:50%; filter: blur(30px); pointer-events:none; }
+.hero .blob1 { width:220px; height:220px; background: rgba(255,255,255,0.14); top:-90px; right:-60px; }
+.hero .blob2 { width:160px; height:160px; background: rgba(180,72,111,0.30); bottom:-70px; left:10%; }
+.hero .dot { position:absolute; border-radius:50%; pointer-events:none; }
+.hero-rule { height:1px; background: rgba(255,255,255,0.28); margin: 14px 0 12px; }
+.hero-kicker { display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#fff; background: rgba(255,255,255,0.16); padding:4px 10px; border-radius:999px; margin-bottom:10px; }
+.hero-tagline { font-size:13.5px; line-height:1.65; max-width:640px; color: rgba(255,255,255,0.88); margin:0; }
+.hero-tagline b { color:#fff; font-weight:700; }
+.hero-stats { display:flex; gap:18px; margin-top:16px; flex-wrap:wrap; }
+.hero-stat { background: rgba(255,255,255,0.14); border-radius: 12px; padding: 8px 14px; }
+.hero-stat b { display:block; font-size:16px; font-weight:800; }
+.hero-stat span { font-size:10px; text-transform:uppercase; letter-spacing:.05em; opacity:.85; }
+
+/* ============================= SECTION HEADERS ============================= */
+.section-label-row { display:flex; align-items:center; justify-content: space-between; gap:8px; margin-bottom:4px; flex-wrap: wrap; }
+.section-label-left { display:flex; align-items:center; gap:8px; }
+.section-label { font-family: var(--font-head); font-weight:700; font-size:20px; color:var(--text); margin:0; letter-spacing:-0.01em; }
+.section-sub { font-size:12.5px; color:var(--text-muted); margin:0 0 16px; }
+.sparkle { color: var(--gold); font-size:15px; }
+.view-intro { font-size: 13.5px; line-height:1.6; color: var(--text-muted); max-width: 680px; margin: 0 0 26px; padding: 14px 16px; background: #fff; border-radius: 14px; border: var(--border-thin); }
+.view-intro b { color: var(--text); }
+
+/* ============================= PILLS / FILTERS ============================= */
+.pills { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px; }
+.pill { font-size:12px; font-weight:600; padding:8px 14px; border-radius:999px; background:var(--surface); border:var(--border-thin); color:var(--text-muted); cursor:pointer; transition: all .15s ease; }
+.pill.active { background: linear-gradient(135deg, var(--coral), var(--coral-dark)); color:#fff; border-color:transparent; box-shadow: 0 6px 14px rgba(217,98,47,0.30); }
+.pill:hover:not(.active) { background:#f6efe6; }
+
+/* ============================= VENDOR CARD ============================= */
+.card-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:20px; }
+@media (max-width:860px){ .card-grid{ grid-template-columns:1fr 1fr; } }
+@media (max-width:600px){ .card-grid{ grid-template-columns:1fr; } }
+.vcard { background:var(--surface); border-radius:20px; border:var(--border-thin); box-shadow:var(--shadow-sm); overflow:hidden; display:flex; flex-direction:column; position:relative; transition: transform .18s ease, box-shadow .18s ease; }
+.vcard::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background: linear-gradient(90deg, var(--coral), var(--gold)); }
+.vcard:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.vcard-photo { height:112px; width:100%; object-fit:cover; display:block; }
+.vcard-body { padding:14px 14px 15px; display:flex; flex-direction:column; gap:7px; flex:1; }
+.vcard-top { display:flex; align-items:flex-start; justify-content:space-between; gap:6px; }
+.vcard-cat { font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--coral); background:#F7ECE3; padding:3px 8px; border-radius:6px; display:inline-block; }
+.vcard-name { font-family: var(--font-head); font-weight:700; font-size:15px; color:var(--text); line-height:1.3; margin-top:5px; display:block; }
+.match-badge { font-size:10px; font-weight:700; padding:3px 9px; border-radius:999px; white-space:nowrap; color:#fff; background: linear-gradient(135deg, var(--coral), var(--gold)); flex-shrink:0; }
+.founding-badge { font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px; background:#F3E7CE; color:#8a6a24; text-transform:uppercase; letter-spacing:.03em; }
+.verified-row { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--success); font-weight:600; }
+.rating-row { font-size:11.5px; color:var(--text-muted); display:flex; align-items:center; gap:5px; flex-wrap: wrap; }
+.rating-row b { color:var(--text); }
+.reason-tags { display:flex; flex-wrap:wrap; gap:5px; }
+.reason-tag { font-size:9.5px; font-weight:600; padding:3px 7px; border-radius:6px; background:#F4EDE3; color:#8a6a3f; }
+.vcard-foot { display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:9px; border-top:1px dashed var(--divider); }
+.price-range { font-size:12px; font-weight:700; color:var(--text); }
+.price-range span { font-weight:500; color:var(--text-muted); font-size:10px; display:block; }
+.btn-mini { font-size:10.5px; font-weight:700; padding:7px 12px; border-radius:999px; background:transparent; color:var(--coral); border:1.5px solid var(--coral); cursor:pointer; transition: all .15s ease; }
+.btn-mini:hover { background: var(--coral); color:#fff; }
+.btn-mini:disabled { opacity:.5; cursor:default; }
+.btn-mini.solid { background: var(--coral); color:#fff; }
+
+/* ============================= BUTTONS / FORM GENERIC ============================= */
+.btn-primary { font-family:var(--font-body); font-size:13.5px; font-weight:700; padding:13px 22px; border-radius:13px; border:none; cursor:pointer; color:#fff; background: linear-gradient(135deg, var(--coral), var(--coral-dark)); box-shadow: 0 10px 22px rgba(217,98,47,0.30); display:inline-flex; align-items:center; gap:8px; justify-content:center; transition: transform .12s ease, box-shadow .12s ease; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 14px 26px rgba(217,98,47,0.38); }
+.btn-primary:disabled { opacity:.45; cursor:default; transform:none; box-shadow:none; }
+.btn-secondary { font-family:var(--font-body); font-size:12.5px; font-weight:600; padding:10px 16px; border-radius:12px; cursor:pointer; background:transparent; color:var(--text-muted); border:var(--border-thin); }
+.btn-secondary:hover { background:#f6efe6; }
+.btn-ghost-gold { font-size: 12px; font-weight:700; color: var(--coral-dark); background: #FBEDE3; border: 1px solid #f0d8c4; padding: 9px 14px; border-radius: 10px; cursor:pointer; }
+
+.card-surface { background:var(--surface); border-radius:20px; border:var(--border-thin); box-shadow:var(--shadow-sm); padding:22px; }
+#listingLayout { display:grid; grid-template-columns:1.15fr 1fr; gap:22px; }
+@media (max-width:840px){ #listingLayout{ grid-template-columns:1fr; } }
+
+.field { margin-bottom: 15px; }
+.field label { display:block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:#6b5d4f; margin-bottom:5px; }
+.field .hint { font-size:11px; color: var(--text-muted); margin-top:4px; }
+.field .hint.warn { color: var(--warn); font-weight:600; }
+.field input[type=text], .field input[type=number], .field input[type=date], .field input[type=email], .field input[type=tel], .field textarea, .field select {
+  width:100%; padding:10px 12px; font-size:13px; border-radius:10px; border: var(--border-thin); background:#fffdfb; color:var(--text); font-family: var(--font-body);
+}
+.field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 3px rgba(217,98,47,0.14); }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media (max-width:640px){ .field-row{ grid-template-columns:1fr; } }
+.check-row { display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color: var(--text); margin: 6px 0 14px; }
+.chip-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+.chip { font-size:11px; font-weight:600; padding:5px 10px; border-radius:999px; background:#f2ebe1; color:var(--text-muted); display:flex; align-items:center; gap:5px; }
+.chip button { border:none; background:none; cursor:pointer; color:#a2917f; font-size: 12px; line-height:1; }
+
+/* ============================= MATCH MOMENT ============================= */
+.match-section-wrap { background: linear-gradient(160deg, rgba(217,98,47,0.06), rgba(201,162,39,0.07)); border-radius:26px; padding: 4px; border:1px solid rgba(217,98,47,0.12); }
+.match-wrap { background:var(--surface); border-radius:20px; overflow:hidden; }
+.match-split { display:grid; grid-template-columns:1.3fr 1fr; }
+@media (max-width:760px){ .match-split{ grid-template-columns:1fr; } }
+.match-split.confirm-mode { grid-template-columns:1fr; }
+.booking-confirm { padding:44px 30px; text-align:center; }
+.booking-confirm .big-check { font-size:44px; margin-bottom:8px; }
+.booking-confirm .card-surface { text-align:left; max-width:360px; margin:0 auto 22px; }
+.match-listing { padding:26px; border-right: var(--border-thin); }
+.match-booking { padding:26px; background:#fdfaf6; position:relative; }
+.match-booking::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, var(--coral), var(--gold)); }
+.listing-photo { width:100%; height:150px; object-fit:cover; border-radius:14px; margin-bottom:14px; }
+.listing-name { font-family: var(--font-head); font-weight:700; font-size:19px; color:var(--text); margin:0 0 6px; }
+.listing-desc { font-size:13px; line-height:1.6; color:var(--text-muted); margin:8px 0 14px; }
+.license-note { display:flex; align-items:flex-start; gap:8px; font-size:11.5px; color:var(--success); background:#EEF4EC; border-radius:10px; padding:10px 12px; line-height:1.5; font-weight:500; margin-bottom: 8px; }
+.strike-note { display:flex; align-items:flex-start; gap:8px; font-size:11.5px; color:var(--warn); background:#FBF3E4; border-radius:10px; padding:10px 12px; line-height:1.5; font-weight:600; margin-bottom:8px; }
+.money-row { display:flex; align-items:center; justify-content:space-between; font-size:12.5px; padding:8px 0; color:var(--text-muted); }
+.money-row b { color:var(--text); font-weight:700; }
+.money-row.total { border-top:var(--border-thin); margin-top:4px; padding-top:12px; font-size:14px; }
+.money-row.total b { color:var(--coral-dark); font-size:16px; }
+.due-badge { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; padding:2px 8px; border-radius:5px; background:#FBEDE3; color:#B0521F; }
+.due-badge.later { background:#eef0ea; color:#5b6b52; }
+.terms-row { display:flex; align-items:flex-start; gap:8px; font-size:12px; color:var(--text-muted); margin:14px 0; }
+.terms-row input { margin-top:2px; }
+.match-empty { text-align:center; padding: 60px 20px; color: var(--text-muted); font-size:13px; }
+
+/* ============================= OVERLAYS / MODAL ============================= */
+.overlay { position:fixed; inset:0; z-index:80; background: rgba(43,33,25,0.55); backdrop-filter: blur(3px); display:flex; align-items:center; justify-content:center; padding:20px; animation: fadeIn .18s ease; }
+.overlay-panel { background:var(--surface); border-radius:22px; max-width: 880px; width:100%; max-height:90vh; overflow-y:auto; box-shadow: var(--shadow-lg); animation: popIn .2s ease; }
+.overlay-close { position:absolute; top:14px; right:14px; width:34px; height:34px; border-radius:50%; border:none; background:#f2ebe1; color:var(--text); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; z-index:5; }
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+@keyframes popIn { from{opacity:0; transform: scale(.97) translateY(6px);} to{opacity:1; transform:scale(1) translateY(0);} }
+
+.modal-sm { max-width: 460px; }
+.modal-head { padding: 22px 26px 0; position:relative; }
+.modal-title { font-family: var(--font-head); font-weight:700; font-size:19px; margin:0 0 4px; }
+.modal-sub { font-size:12px; color:var(--text-muted); margin:0; }
+.modal-body { padding: 18px 26px 26px; }
+
+/* ============================= TOAST ============================= */
+.toast { position:fixed; bottom:22px; right:22px; z-index:120; background:#2B2119; color:#fff; padding:13px 18px; border-radius:12px; font-size:12.5px; font-weight:600; box-shadow: 0 14px 30px rgba(0,0,0,0.25); display:flex; align-items:center; gap:10px; animation: slideUp .25s ease; max-width: 320px; }
+.toast .dot { width:7px; height:7px; border-radius:50%; background:#7bc98f; flex-shrink:0; }
+@keyframes slideUp { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+/* ============================= RSVP GUEST-FACING PAGE ============================= */
+#rsvpOverlay { position:fixed; inset:0; z-index:200; overflow-y:auto; }
+.rsvp-page { min-height:100vh; background: linear-gradient(160deg, #fdf3ea, #FBF7F2 40%); display:flex; justify-content:center; padding: 40px 18px 60px; }
+.rsvp-card { max-width: 480px; width:100%; }
+.rsvp-banner { background:#2B2119; color:#fff; text-align:center; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:8px; border-radius:10px; margin-bottom:18px; }
+.rsvp-hero { background: linear-gradient(120deg, #E1682F, #C9A227); border-radius:22px; padding:26px; color:#fff; text-align:center; margin-bottom:20px; }
+.rsvp-hero .logo-badge { margin:0 auto 12px; }
+.rsvp-hero h1 { font-family: var(--font-head); font-size:22px; margin:6px 0; }
+.rsvp-hero p { font-size:12.5px; opacity:.9; margin:0; }
+.rsvp-details { display:flex; justify-content:center; gap:16px; margin-top:14px; flex-wrap:wrap; font-size:11.5px; }
+.rsvp-details span { background: rgba(255,255,255,0.16); padding:6px 12px; border-radius:999px; }
+.rsvp-options { display:flex; gap:8px; margin: 6px 0 16px; }
+.rsvp-opt { flex:1; padding:12px; text-align:center; border-radius:12px; border:var(--border-thin); background:#fff; cursor:pointer; font-size:13px; font-weight:700; color:var(--text-muted); }
+.rsvp-opt.selected { border-color: var(--coral); background:#FBEDE3; color:var(--coral-dark); }
+.rsvp-success { text-align:center; padding: 10px 0; }
+.rsvp-success .big-check { font-size:40px; margin-bottom: 6px; }
+.cta-box { margin-top:20px; background: linear-gradient(135deg, #2B2119, #45362A); border-radius:18px; padding:20px; color:#fff; text-align:center; }
+.cta-box h4 { font-family: var(--font-head); margin:0 0 6px; font-size:15px; }
+.cta-box p { font-size:12px; opacity:.85; margin:0 0 14px; }
+
+/* ============================= GUEST TRACKING PANEL ============================= */
+.guest-tally { display:flex; gap:10px; margin-bottom: 12px; flex-wrap:wrap; }
+.tally-chip { flex:1; min-width:90px; background:#fdfaf6; border:var(--border-thin); border-radius:12px; padding:10px 12px; text-align:center; }
+.tally-chip b { display:block; font-size:18px; font-family: var(--font-head); }
+.tally-chip span { font-size:9.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); }
+.guest-row { display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px dashed var(--divider); font-size:12.5px; }
+.guest-row:last-child{ border-bottom:none; }
+.status-badge { font-size:10px; font-weight:700; padding:3px 9px; border-radius:999px; text-transform:uppercase; letter-spacing:.03em; }
+.status-badge.yes { background:#EAF3EA; color:#3f6b41; }
+.status-badge.no { background:#f4e7e7; color:#a04a4a; }
+.status-badge.maybe { background:#fbf1de; color:#9a7524; }
+.status-badge.pending { background:#f2ebe1; color:#9c8a78; }
+
+.footer-note { text-align:center; font-size:11px; color:var(--text-muted); margin-top: 40px; padding-top:20px; border-top:var(--border-thin); }
+
+/* ============================= PROFILE / AUTH ============================= */
+.nav-right { display:flex; align-items:center; gap:10px; }
+.profile-chip { display:flex; align-items:center; gap:8px; background:#fff; border:var(--border-thin); border-radius:999px; padding:5px 6px 5px 5px; }
+.avatar-circle { width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,var(--coral),var(--gold)); color:#fff; font-weight:800; font-size:11.5px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.profile-meta { display:flex; flex-direction:column; line-height:1.2; }
+.profile-meta b { font-size:11.5px; color:var(--text); }
+.profile-meta span { font-size:9.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.03em; }
+.btn-signin { font-size:12px; font-weight:700; padding:9px 16px; border-radius:999px; background:var(--text); color:#fff; border:none; cursor:pointer; }
+.btn-signout { border:none; background:#f2ebe1; color:var(--text-muted); width:24px; height:24px; border-radius:50%; cursor:pointer; font-size:12px; }
+.auth-role-toggle { display:flex; gap:6px; background:#f2ebe1; padding:4px; border-radius:12px; margin-bottom:16px; }
+.auth-role-btn { flex:1; padding:10px; border-radius:9px; border:none; background:transparent; font-size:12.5px; font-weight:700; color:var(--text-muted); cursor:pointer; }
+.auth-role-btn.active { background:#fff; color:var(--coral-dark); box-shadow:var(--shadow-sm); }
+.mock-note { font-size:11px; color:var(--text-muted); background:#fdfaf6; border:1px dashed var(--divider); border-radius:10px; padding:9px 11px; margin:10px 0 4px; line-height:1.5; }
+
+/* ============================= EVENT SWITCHER ============================= */
+.event-switch-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+.event-pill { display:flex; align-items:center; gap:7px; font-size:12px; font-weight:600; padding:8px 8px 8px 14px; border-radius:999px; background:#fff; border:var(--border-thin); color:var(--text-muted); cursor:pointer; }
+.event-pill .type-dot { width:6px; height:6px; border-radius:50%; background:var(--gold); }
+.event-pill.active { background: linear-gradient(135deg, var(--coral), var(--coral-dark)); color:#fff; border-color:transparent; }
+.event-pill.active .type-dot { background:#fff; }
+.event-pill .ev-remove { width:18px; height:18px; border-radius:50%; border:none; background:rgba(0,0,0,0.08); color:inherit; font-size:10px; cursor:default; opacity:.6; }
+.btn-add-event { font-size:12px; font-weight:700; padding:8px 14px; border-radius:999px; background:transparent; border:1.5px dashed var(--coral); color:var(--coral-dark); cursor:pointer; }
+.btn-add-event:disabled { opacity:.45; cursor:default; border-style:solid; border-color: var(--divider); color: var(--text-muted); }
+.event-cap-note { font-size:11px; color:var(--text-muted); margin: -10px 0 16px; }
+.past-events-toggle { font-size:11.5px; font-weight:700; color:var(--text-muted); cursor:pointer; margin: 10px 0; display:inline-block; text-decoration:underline; }
+.past-event-row { display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px dashed var(--divider); font-size:12.5px; color:var(--text-muted); }
+.archived-tag { font-size:9.5px; font-weight:700; text-transform:uppercase; background:#f2ebe1; color:#9c8a78; padding:2px 8px; border-radius:6px; }
+
+/* ============================= SUSPENDED / EXPIRY ============================= */
+.suspended-badge { font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; background:#F7E3E3; color:var(--danger); padding:3px 8px; border-radius:6px; }
+.suspended-note { display:flex; align-items:flex-start; gap:8px; font-size:11.5px; color:var(--danger); background:#FBEDED; border-radius:10px; padding:10px 12px; line-height:1.5; font-weight:600; margin-bottom:8px; }
+.vcard.is-suspended { opacity: 0.72; }
+.listing-warn-banner { display:flex; align-items:center; justify-content:space-between; gap:10px; background:#FBEDED; border:1px solid #f0d0d0; color:var(--danger); border-radius:12px; padding:10px 14px; font-size:12px; font-weight:600; margin-bottom:10px; }
+
+/* ============================= CHAT ============================= */
+.chat-thread { max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding:4px 2px; margin-bottom:12px; }
+.chat-msg { max-width:78%; padding:9px 12px; border-radius:14px; font-size:12.5px; line-height:1.5; }
+.chat-msg.host { align-self:flex-end; background: linear-gradient(135deg, var(--coral), var(--coral-dark)); color:#fff; border-bottom-right-radius:4px; }
+.chat-msg.vendor { align-self:flex-start; background:#f2ebe1; color:var(--text); border-bottom-left-radius:4px; }
+.chat-msg .chat-time { display:block; font-size:9px; opacity:.7; margin-top:3px; }
+.chat-input-row { display:flex; gap:8px; }
+.chat-input-row input { flex:1; }
+.optional-tag { font-size:9.5px; font-weight:700; text-transform:uppercase; color:var(--text-muted); background:#f2ebe1; padding:2px 7px; border-radius:6px; margin-left:6px; }
+
+/* ============================= VENDOR DASHBOARD ============================= */
+.dash-locked { text-align:center; padding: 22px 16px; color:var(--text-muted); font-size:12.5px; }
+.dash-locked .btn-signin { margin-top:10px; }
+.edit-tag { font-size:9.5px; font-weight:700; text-transform:uppercase; background:#FBEDE3; color:var(--coral-dark); padding:2px 8px; border-radius:6px; margin-left:6px; }
+</style>
+</head>
+<body>
+
+<nav class="app-nav">
+  <div class="app-nav-inner">
+    <div class="brand">
+      <div class="logo-badge">P</div>
+      <div class="wordmark">PlanMyEvent</div>
+    </div>
+    <div class="role-tabs">
+      <button class="role-tab active" data-role="host" onclick="setRole('host')"><span class="req-dot"></span>Host — Browse &amp; Book</button>
+      <button class="role-tab" data-role="vendor" onclick="setRole('vendor')"><span class="req-dot"></span>Vendor — My Listing</button>
+    </div>
+    <div class="nav-right" id="profileArea"></div>
+  </div>
+</nav>
+
+<div class="stage"><div class="stage-inner">
+
+  <!-- ============================================================ HOST VIEW (Consumer Browse + Match Moment) ============================================================ -->
+  <div class="view-panel active" data-view="host" id="viewHost">
+
+    <div class="hero">
+      <span class="blob blob1"></span><span class="blob blob2"></span>
+      <span class="dot" style="width:6px;height:6px;background:rgba(255,255,255,.7);top:16px;left:42%;"></span>
+      <span class="dot" style="width:9px;height:9px;background:rgba(255,255,255,.35);top:56px;left:60%;"></span>
+      <span class="dot" style="width:5px;height:5px;background:rgba(255,255,255,.55);bottom:20px;left:34%;"></span>
+      <div class="top-nav" style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; opacity:.85;">Event Board</div>
+        <button class="btn-ghost-gold" onclick="openInviteModal()" style="background:rgba(255,255,255,0.16); border-color:transparent; color:#fff;">✉ Invite Guests</button>
+      </div>
+      <div class="hero-rule"></div>
+      <div class="hero-kicker">✦ Tampa Bay Launch</div>
+      <p class="hero-tagline"><b>PlanMyEvent</b> matches Tampa hosts with vetted event vendors. Browse verified pros ranked to your budget and style, compare quotes, and book with your deposit held safely in escrow — balance due later, not all upfront.</p>
+      <div class="hero-stats" id="heroStats"></div>
+    </div>
+
+    <div class="section-label-row">
+      <div class="section-label-left"><span class="sparkle">✦</span><p class="section-label">Your Events</p></div>
+    </div>
+    <p class="section-sub">Manage up to 3 active events at once — each gets its own vendor matches, budget and guest list. Events auto-archive 3 days after their date.</p>
+    <div class="event-switch-row" id="eventSwitchRow"></div>
+    <div class="event-cap-note" id="eventCapNote"></div>
+    <span class="past-events-toggle" id="pastEventsToggle" onclick="togglePastEvents()" style="display:none;">Show past / archived events ▾</span>
+    <div id="pastEventsList" style="display:none; margin-bottom:18px;"></div>
+
+    <div class="card-surface" id="eventDetailsCard" style="margin-bottom:24px;"></div>
+
+    <div class="section-label-row">
+      <div class="section-label-left"><span class="sparkle">✦</span><p class="section-label" id="eventTitleLabel">Catering for Olivia &amp; Liam's Wedding</p></div>
+    </div>
+    <p class="section-sub">Ranked by budget fit, location, style and verified trust score — not by who pays the most. Tap a card's reasons to see why it was matched.</p>
+
+    <div class="pills" id="categoryPills"></div>
+    <div class="card-grid" id="vendorGrid"></div>
+
+    <div class="section-label-row" style="margin-top:10px;">
+      <div class="section-label-left"><span class="sparkle">✦</span><p class="section-label">Guests &amp; RSVPs</p></div>
+      <button class="btn-secondary" onclick="openGuestPreview()">Preview guest invite page ↗</button>
+    </div>
+    <p class="section-sub">Every guest who RSVPs sees the PlanMyEvent brand first, then a direct path to start their own event board.</p>
+    <div class="card-surface" id="guestPanel"></div>
+
+  </div>
+
+  <!-- ============================================================ VENDOR VIEW (Producer Listing) ============================================================ -->
+  <div class="view-panel" data-view="vendor" id="viewVendor">
+    <div class="section-label-row"><div class="section-label-left"><span class="sparkle">✦</span><p class="section-label">Create or Edit Your Listing</p></div></div>
+    <p class="view-intro"><b>This is the Producer Listing view.</b> Vendors publish the listing hosts will browse and book from. Required fields change based on service category — Florida law treats a caterer, a venue, and a photographer differently, and PlanMyEvent's Governance Charter reflects that instead of asking everyone for the same generic paperwork.</p>
+
+    <div id="listingLayout">
+      <div class="card-surface">
+        <div id="editModeBanner" style="display:none;" class="listing-warn-banner">
+          <span>Editing an existing listing<span class="edit-tag">Edit Mode</span></span>
+          <button class="btn-secondary" onclick="cancelEditListing()">Cancel</button>
+        </div>
+        <div class="field">
+          <label>Business / Listing Name</label>
+          <input type="text" id="fBusinessName" placeholder="e.g. Sunset Grove Catering" oninput="renderListingPreview()" />
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Service Category</label>
+            <select id="fCategory" onchange="onCategoryChange()">
+              <option value="catering">Catering &amp; Dining</option>
+              <option value="photography">Photography &amp; Video</option>
+              <option value="florist">Floral Design</option>
+              <option value="dj_audio">DJ &amp; Sound</option>
+              <option value="venue">Venue / Location</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>City</label>
+            <input type="text" id="fCity" value="Tampa" oninput="renderListingPreview()" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Listing Description</label>
+          <textarea id="fDescription" rows="3" placeholder="Describe your style, specialties, and what makes your service a fit for Tampa events." oninput="renderListingPreview()"></textarea>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Typical Price — Min ($)</label>
+            <input type="number" id="fPriceMin" value="2000" step="100" oninput="renderListingPreview()" />
+          </div>
+          <div class="field">
+            <label>Typical Price — Max ($)</label>
+            <input type="number" id="fPriceMax" value="5000" step="100" oninput="renderListingPreview()" />
+          </div>
+        </div>
+        <div id="credentialSection"></div>
+
+        <button class="btn-primary" style="width:100%; margin-top:6px;" onclick="publishListing()">Publish Listing &amp; Go Live to Hosts →</button>
+      </div>
+
+      <div>
+        <div class="field" style="margin-bottom:10px;">
+          <label style="margin-bottom:8px;">Live Preview — how hosts will see this</label>
+        </div>
+        <div class="card-grid" style="grid-template-columns:1fr; margin-bottom:18px;">
+          <div id="listingPreviewCard"></div>
+        </div>
+        <div class="card-surface">
+          <h3 style="font-family:var(--font-head); font-size:14px; margin:0 0 8px;">Your Published Listings</h3>
+          <div id="myListingsList" style="font-size:12.5px; color:var(--text-muted);">You haven't published a listing yet — it'll appear here and instantly show up in the Host browse view.</div>
+        </div>
+        <div class="card-surface" style="margin-top:14px;">
+          <h3 style="font-family:var(--font-head); font-size:14px; margin:0 0 4px;">Manage Availability</h3>
+          <p style="font-size:11.5px; color:var(--text-muted); margin:0 0 10px;">Publishing a listing is a one-time step per service. The dates you're <i>not</i> available are different — add or remove them here any time, no republishing required.</p>
+          <div id="availabilityManagerList" style="font-size:12.5px; color:var(--text-muted);"></div>
+        </div>
+        <div class="card-surface" style="margin-top:14px;" id="vendorDashboardWrap">
+          <h3 style="font-family:var(--font-head); font-size:14px; margin:0 0 8px;">Open Leads Matching Your Category</h3>
+          <div id="vendorLeadsList" style="font-size:12.5px; color:var(--text-muted);"></div>
+          <h3 style="font-family:var(--font-head); font-size:14px; margin:16px 0 8px;">Quotes Sent</h3>
+          <div id="vendorQuotesList" style="font-size:12.5px; color:var(--text-muted);"></div>
+          <h3 style="font-family:var(--font-head); font-size:14px; margin:16px 0 8px;">Bookings Won</h3>
+          <div id="vendorBookingsList" style="font-size:12.5px; color:var(--text-muted);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div></div>
+
+<!-- ============================================================ MATCH MOMENT OVERLAY ============================================================ -->
+<div class="overlay" id="matchOverlay" style="display:none;" onclick="if(event.target===this) closeMatchMoment()">
+  <div class="overlay-panel" style="max-width: 900px; position:relative;">
+    <button class="overlay-close" onclick="closeMatchMoment()">✕</button>
+    <div style="padding:26px 26px 0;">
+      <div class="section-label-row" style="margin-bottom:2px;"><div class="section-label-left"><span class="sparkle">✦</span><p class="section-label" style="font-size:18px;">Match Moment</p></div></div>
+      <p class="section-sub" id="matchMomentSub">Full listing detail and the booking decision, side by side — nothing hidden behind another click.</p>
+    </div>
+    <div class="match-section-wrap" style="margin:0 26px 26px;">
+      <div class="match-wrap match-split" id="matchMomentBody"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ INVITE GUESTS MODAL ============================================================ -->
+<div class="overlay" id="inviteOverlay" style="display:none;" onclick="if(event.target===this) closeInviteModal()">
+  <div class="overlay-panel modal-sm" style="position:relative;">
+    <button class="overlay-close" onclick="closeInviteModal()">✕</button>
+    <div class="modal-head">
+      <h2 class="modal-title">Invite Guests</h2>
+      <p class="modal-sub">Every invite carries the same shareable link — no backend needed for a real RSVP demo.</p>
+    </div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field"><label>Guest Name</label><input type="text" id="fGuestName" placeholder="Jamie Rivera" /></div>
+        <div class="field"><label>Phone or Email</label><input type="text" id="fGuestContact" placeholder="jamie@email.com" /></div>
+      </div>
+      <button class="btn-secondary" onclick="addGuest()" style="width:100%; margin-bottom:14px;">+ Add to Guest List</button>
+      <div id="inviteGuestList" style="max-height:180px; overflow-y:auto; margin-bottom:14px;"></div>
+      <div class="field">
+        <label>Shareable Invite Link</label>
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="inviteLinkField" readonly value="" style="flex:1;" />
+          <button class="btn-secondary" onclick="copyInviteLink()">Copy</button>
+        </div>
+        <div class="hint">In a live build this resolves to the real RSVP page. Here, use "Preview guest invite page" on the Host tab.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ AUTH / MOCK SIGN-IN MODAL ============================================================ -->
+<div class="overlay" id="authOverlay" style="display:none;" onclick="if(event.target===this) closeAuthModal()">
+  <div class="overlay-panel modal-sm" style="position:relative;">
+    <button class="overlay-close" onclick="closeAuthModal()">✕</button>
+    <div class="modal-head">
+      <h2 class="modal-title">Sign In / Sign Up</h2>
+      <p class="modal-sub">Mock authentication for demo purposes — no password, nothing sent anywhere.</p>
+    </div>
+    <div class="modal-body">
+      <div class="auth-role-toggle">
+        <button class="auth-role-btn" id="authTabHost" onclick="switchAuthTab('host')">I'm a Host</button>
+        <button class="auth-role-btn" id="authTabVendor" onclick="switchAuthTab('vendor')">I'm a Vendor</button>
+      </div>
+
+      <div id="authFormHost">
+        <div class="field"><label>Full Name</label><input type="text" id="authHostName" placeholder="Olivia Reyes" /></div>
+        <div class="field"><label>Email</label><input type="email" id="authHostEmail" placeholder="olivia@email.com" /></div>
+        <div class="field"><label>Phone</label><input type="tel" id="authHostPhone" placeholder="(813) 555-0100" /></div>
+        <div class="mock-note">✓ Per the Governance Charter, hosts get deliberately lightweight verification — email + phone only. Full identity verification is deferred to the match moment, when a deposit is actually on the line.</div>
+        <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="submitHostAuth()">Verify &amp; Enter Host Dashboard →</button>
+      </div>
+
+      <div id="authFormVendor" style="display:none;">
+        <div class="field"><label>Business Contact Name</label><input type="text" id="authVendorName" placeholder="Jordan Ellis" /></div>
+        <div class="field"><label>Business Email</label><input type="email" id="authVendorEmail" placeholder="jordan@yourbusiness.com" /></div>
+        <div class="field">
+          <label>Primary Service Category</label>
+          <select id="authVendorCategory">
+            <option value="catering">Catering &amp; Dining</option>
+            <option value="photography">Photography &amp; Video</option>
+            <option value="florist">Floral Design</option>
+            <option value="dj_audio">DJ &amp; Sound</option>
+            <option value="venue">Venue / Location</option>
+          </select>
+        </div>
+        <div class="mock-note">✓ This creates a lightweight account only. Full credential verification (license #, insurance, portfolio minimum) happens per the Governance Charter when you publish your listing on the next screen.</div>
+        <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="submitVendorAuth()">Continue to Listing Setup →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ CREATE EVENT MODAL ============================================================ -->
+<div class="overlay" id="createEventOverlay" style="display:none;" onclick="if(event.target===this) closeCreateEventModal()">
+  <div class="overlay-panel modal-sm" style="position:relative;">
+    <button class="overlay-close" onclick="closeCreateEventModal()">✕</button>
+    <div class="modal-head">
+      <h2 class="modal-title" id="ceModalTitle">Create a New Event</h2>
+      <p class="modal-sub" id="ceModalSub">Any event type welcome — PlanMyEvent isn't just for weddings.</p>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Event Type</label>
+        <select id="ceType">
+          <option value="wedding">Wedding</option>
+          <option value="birthday">Birthday</option>
+          <option value="corporate">Corporate Event</option>
+          <option value="graduation">Graduation</option>
+          <option value="shower">Baby / Bridal Shower</option>
+          <option value="anniversary">Anniversary</option>
+          <option value="gala">Gala / Fundraiser</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="field"><label>Event Title</label><input type="text" id="ceTitle" placeholder="e.g. Maya's 30th Birthday Bash" /></div>
+      <div class="field-row">
+        <div class="field"><label>City</label><input type="text" id="ceCity" value="Tampa" /></div>
+        <div class="field"><label>Event Date</label><input type="date" id="ceDate" /></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Estimated Guest Count</label><input type="number" id="ceGuests" value="50" min="1" /></div>
+        <div class="field"><label>Total Event Budget ($)</label><input type="number" id="ceBudget" value="15000" min="0" step="100" /></div>
+      </div>
+      <div class="field"><label>Style / Theme</label><input type="text" id="ceStyle" placeholder="e.g. Tropical Coastal, Modern Minimalist" value="Tropical Coastal" /></div>
+      <div class="mock-note">Vendor matching will run against whichever categories you need — catering, photography, florals, DJ/audio and venue are all supported from day one. We split your total budget across categories using typical allocation (catering and venue get the largest share), and that's what Budget Fit matching runs against.</div>
+      <button class="btn-primary" style="width:100%; margin-top:10px;" id="ceSubmitBtn" onclick="submitCreateEvent()">Create Event &amp; Start Matching →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ CHAT MODAL ============================================================ -->
+<div class="overlay" id="chatOverlay" style="display:none;" onclick="if(event.target===this) closeChat()">
+  <div class="overlay-panel modal-sm" style="position:relative;">
+    <button class="overlay-close" onclick="closeChat()">✕</button>
+    <div class="modal-head">
+      <h2 class="modal-title" id="chatVendorName">Message Vendor</h2>
+      <p class="modal-sub">Optional — talk first, book whenever you're ready. Chatting never requires a booking.<span class="optional-tag">Optional</span></p>
+    </div>
+    <div class="modal-body">
+      <div class="chat-thread" id="chatThread"></div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Type a message…" onkeydown="if(event.key==='Enter') sendChatMessage()" />
+        <button class="btn-primary" onclick="sendChatMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ GUEST-FACING RSVP PAGE (full-screen) ============================================================ -->
+<div id="rsvpOverlay" style="display:none;">
+  <div class="rsvp-page">
+    <div class="rsvp-card">
+      <div class="rsvp-banner">👀 This is what your guest sees — <span style="cursor:pointer; text-decoration:underline;" onclick="closeGuestPreview()">← Back to Dashboard</span></div>
+      <div class="rsvp-hero">
+        <div class="logo-badge" style="width:40px;height:40px;font-size:18px; background:#fff; color:var(--coral);">P</div>
+        <h1>You're Invited!</h1>
+        <p id="rsvpEventName">Olivia &amp; Liam are getting married</p>
+        <div class="rsvp-details" id="rsvpEventDetails"><span>📍 Tampa, FL</span><span>📅 Nov 14, 2026</span><span>🌴 Tropical Coastal</span></div>
+      </div>
+
+      <div id="rsvpFormWrap" class="card-surface">
+        <div class="field"><label>Your Name</label><input type="text" id="rGuestName" placeholder="Your full name" /></div>
+        <div class="field">
+          <label>Will you attend?</label>
+          <div class="rsvp-options">
+            <div class="rsvp-opt" data-v="yes" onclick="selectRsvp('yes')">Yes 🎉</div>
+            <div class="rsvp-opt" data-v="maybe" onclick="selectRsvp('maybe')">Maybe</div>
+            <div class="rsvp-opt" data-v="no" onclick="selectRsvp('no')">Can't make it</div>
+          </div>
+        </div>
+        <div class="field"><label>Party Size</label><input type="number" id="rPartySize" value="1" min="1" max="8" /></div>
+        <button class="btn-primary" style="width:100%;" onclick="submitRsvp()">Submit RSVP</button>
+      </div>
+
+      <div id="rsvpSuccessWrap" style="display:none;">
+        <div class="card-surface rsvp-success">
+          <div class="big-check">🎊</div>
+          <h3 style="font-family:var(--font-head); margin:6px 0;">Thanks, <span id="rsvpThanksName">Guest</span>!</h3>
+          <p style="font-size:12.5px; color:var(--text-muted); margin:0;">Your RSVP has been sent to Olivia &amp; Liam.</p>
+        </div>
+        <div class="cta-box">
+          <h4>Planning an event of your own?</h4>
+          <p>Create a free Event Board and get matched with verified Tampa vendors in minutes.</p>
+          <button class="btn-primary" style="width:100%; background:linear-gradient(135deg, var(--gold), #b3891f);" onclick="closeGuestPreview()">Start My Own Event Board →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ======================================================================
+   DATA MODEL
+====================================================================== */
+const CATEGORY_META = {
+  catering:    { label: 'Catering & Dining', credType: 'catering_license' },
+  photography: { label: 'Photography & Video', credType: 'standard' },
+  florist:     { label: 'Floral Design', credType: 'standard' },
+  dj_audio:    { label: 'DJ & Sound', credType: 'standard' },
+  venue:       { label: 'Venues & Locations', credType: 'venue_docs' },
+};
+
+const EVENT_TYPE_LABELS = {
+  wedding: 'Wedding', birthday: 'Birthday', corporate: 'Corporate Event', graduation: 'Graduation',
+  shower: 'Baby / Bridal Shower', anniversary: 'Anniversary', gala: 'Gala / Fundraiser', other: 'Event',
+};
+const MAX_ACTIVE_EVENTS = 3;
+const ARCHIVE_DAYS_AFTER = 3;
+// Fixed mock-auth id for the demo vendor account — this is what lets the seeded catering listing
+// below show up under "Your Published Listings" the moment anyone signs in as a vendor.
+const DEMO_VENDOR_USER_ID = 'u_demo_vendor';
+
+const DEFAULT_EVENTS = [
+  { id: 'e1', type: 'wedding', title: "Olivia & Liam's Garden Wedding",
+    city: 'Tampa', state: 'FL', date: '2026-11-14', guestCount: 120,
+    styleTheme: 'Tropical Coastal', totalBudget: 16700,
+    servicesNeeded: [
+      { category: 'catering', targetBudget: 6500 },
+      { category: 'photography', targetBudget: 3000 },
+      { category: 'florist', targetBudget: 1800 },
+      { category: 'dj_audio', targetBudget: 1400 },
+      { category: 'venue', targetBudget: 4000 },
+    ],
+  },
+  { id: 'e2', type: 'birthday', title: "Elena's 40th Birthday Bash",
+    city: 'Tampa', state: 'FL', date: '2026-10-18', guestCount: 60,
+    styleTheme: 'Vibrant Festive', totalBudget: 7500,
+    servicesNeeded: [
+      { category: 'catering', targetBudget: 2600 },
+      { category: 'photography', targetBudget: 900 },
+      { category: 'florist', targetBudget: 500 },
+      { category: 'dj_audio', targetBudget: 1300 },
+      { category: 'venue', targetBudget: 2200 },
+    ],
+  },
+];
+
+function todayDate() { return new Date(); }
+function isEventArchived(ev) {
+  const evDate = new Date(ev.date + 'T00:00:00');
+  const cutoff = new Date(evDate.getTime() + ARCHIVE_DAYS_AFTER * 86400000);
+  return todayDate() > cutoff;
+}
+function getActiveEvents() { return STATE.events.filter(ev => !isEventArchived(ev)); }
+function getArchivedEvents() { return STATE.events.filter(ev => isEventArchived(ev)); }
+function getActiveEvent() {
+  let ev = STATE.events.find(e => e.id === STATE.activeEventId);
+  if (!ev || isEventArchived(ev)) {
+    const fallback = getActiveEvents()[0];
+    if (fallback) { STATE.activeEventId = fallback.id; ev = fallback; }
+  }
+  return ev || STATE.events[0];
+}
+
+const DEFAULT_VENDORS = [
+  { id:'v1', businessName:'Tampa Bay Catering Co.', category:'catering', city:'Tampa', state:'FL',
+    photo:'https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=600&q=80',
+    bio:'Premier farm-to-table wedding catering in South Tampa. Fresh Gulf seafood, carving stations, and dietary-friendly menus for up to 350 guests.',
+    priceMin:4500, priceMax:12000, maxGuestCapacity:350, styles:['Tropical Coastal','Classic Elegance'],
+    verifiedLevel:'master_verified', rating:4.9, reviewCount:68, responseTimeMinutes:18, onTimeRate:98, cancellations60d:0,
+    isFounding:true, blockedDates:['2026-12-25'], ownerUserId: DEMO_VENDOR_USER_ID, listingStatus:'live',
+    credentials:{ type:'catering_license', licenseNumber:'FL-CAT-88213', licenseExpiry:'2027-03-01', servesAlcohol:true, alcoholLicenseNumber:'FL-ALC-40221' } },
+
+  { id:'v2', businessName:'Coastal Palate Culinary', category:'catering', city:'St. Petersburg', state:'FL',
+    photo:'https://images.unsplash.com/photo-1547573854-74d2a71d0826?auto=format&fit=crop&w=600&q=80',
+    bio:'Vibrant Floridian-Mediterranean fusion menus for coastal weddings and intimate gatherings.',
+    priceMin:3800, priceMax:8500, maxGuestCapacity:220, styles:['Tropical Coastal','Boho Chic'],
+    verifiedLevel:'licensed_insured', rating:4.8, reviewCount:42, responseTimeMinutes:35, onTimeRate:95, cancellations60d:1,
+    isFounding:false, blockedDates:[],
+    credentials:{ type:'catering_license', licenseNumber:'FL-CAT-55019', licenseExpiry:'2025-06-01', servesAlcohol:false } },
+
+  { id:'v3', businessName:'Sunshine Coast Photography', category:'photography', city:'Tampa', state:'FL',
+    photo:'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=600&q=80',
+    bio:'Documentary & editorial wedding photography capturing authentic coastal light and candid emotion.',
+    priceMin:2400, priceMax:4800, maxGuestCapacity:500, styles:['Tropical Coastal','Modern Minimalist','Boho Chic'],
+    verifiedLevel:'master_verified', rating:4.95, reviewCount:84, responseTimeMinutes:12, onTimeRate:99, cancellations60d:0,
+    isFounding:true, blockedDates:[],
+    credentials:{ type:'standard', businessRegNumber:'FL-BR-201933', insurancePolicyNumber:'GL-88213-FL', idVerified:true, portfolioCount:22 } },
+
+  { id:'v4', businessName:'Lumina Wedding Cinema', category:'photography', city:'Clearwater', state:'FL',
+    photo:'https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=600&q=80',
+    bio:'Cinematic same-day-edit wedding films with a soft, romantic color grade.',
+    priceMin:1900, priceMax:4200, maxGuestCapacity:300, styles:['Classic Elegance','Rustic Romance'],
+    verifiedLevel:'licensed_insured', rating:4.7, reviewCount:39, responseTimeMinutes:40, onTimeRate:93, cancellations60d:1,
+    isFounding:false, blockedDates:['2026-11-14'],
+    credentials:{ type:'standard', businessRegNumber:'FL-BR-330120', insurancePolicyNumber:'GL-11029-FL', idVerified:true, portfolioCount:11 } },
+
+  { id:'v5', businessName:'Bloom & Vine Florals', category:'florist', city:'Tampa', state:'FL',
+    photo:'https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=600&q=80',
+    bio:'Lush, garden-style floral design with a focus on Florida-grown and tropical blooms.',
+    priceMin:1200, priceMax:3200, maxGuestCapacity:400, styles:['Tropical Coastal','Boho Chic','Rustic Romance'],
+    verifiedLevel:'licensed_insured', rating:4.7, reviewCount:51, responseTimeMinutes:25, onTimeRate:96, cancellations60d:0,
+    isFounding:false, blockedDates:[],
+    credentials:{ type:'standard', businessRegNumber:'FL-BR-410872', insurancePolicyNumber:'GL-77213-FL', idVerified:true, portfolioCount:15 } },
+
+  { id:'v6', businessName:'Salt Air Sound & DJ', category:'dj_audio', city:'Tampa', state:'FL',
+    photo:'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
+    bio:'High-energy wedding DJ and MC service with full sound, lighting, and dancefloor hype.',
+    priceMin:900, priceMax:2200, maxGuestCapacity:400, styles:['Tropical Coastal','Vibrant Festive'],
+    verifiedLevel:'identity_verified', rating:4.5, reviewCount:19, responseTimeMinutes:50, onTimeRate:90, cancellations60d:2,
+    isFounding:false, blockedDates:[],
+    credentials:{ type:'standard', businessRegNumber:'FL-BR-990142', insurancePolicyNumber:'GL-22841-FL', idVerified:true, portfolioCount:6 } },
+
+  { id:'v7', businessName:'Armature Works Pavilion', category:'venue', city:'Tampa', state:'FL',
+    photo:'https://images.unsplash.com/photo-1519167758481-83f29c8a8f3d?auto=format&fit=crop&w=600&q=80',
+    bio:'Riverfront industrial-chic event pavilion in the heart of Tampa, with in-house catering kitchen access.',
+    priceMin:3000, priceMax:9000, maxGuestCapacity:400, styles:['Tropical Coastal','Industrial Chic'],
+    verifiedLevel:'master_verified', rating:4.9, reviewCount:30, responseTimeMinutes:22, onTimeRate:99, cancellations60d:0,
+    isFounding:true, blockedDates:[],
+    credentials:{ type:'venue_docs', occupancyCertNumber:'OCC-TPA-5521', fireSafetyExpiry:'2027-01-15' } },
+];
+
+// ---- persisted state ----
+// sessionStorage on purpose, not localStorage: it survives a page refresh mid-demo but clears the
+// moment the tab/browser closes, so reopening the file always starts from the seed data below.
+const STORAGE_KEY = 'planmyevent_state_v1';
+function loadState() {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return null;
+}
+function saveState() {
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+      vendors: STATE.vendors, proposals: STATE.proposals, bookings: STATE.bookings, reviews: STATE.reviews, guests: STATE.guests,
+      events: STATE.events, activeEventId: STATE.activeEventId, currentUser: STATE.currentUser, chats: STATE.chats,
+    }));
+  } catch (e) {}
+}
+
+const saved = loadState();
+const STATE = {
+  vendors: (saved && saved.vendors) || DEFAULT_VENDORS.slice(),
+  activeCategory: 'all',
+  proposals: (saved && saved.proposals) || [
+    { id:'p1', vendorId:'v1', category:'catering', quoteAmount:8400, depositRequired:2100, status:'sent', deliverables:['Full-service catering for 120 guests','On-site setup & coordination','Licensed bar staff included'] },
+  ],
+  bookings: (saved && saved.bookings) || [
+    { id:'b1', vendorId:'v6', category:'dj_audio', totalAmount:1600, status:'completed', eventDate:'2026-06-02', reviewed:true },
+  ],
+  reviews: (saved && saved.reviews) || [
+    { id:'r1', vendorId:'v6', hostName:'Priya K.', rating:5, comment:'Kept the dancefloor packed all night, super professional load-in.' },
+  ],
+  guests: (saved && saved.guests) || [
+    { id:'g1', name:'Marcus Bell', contact:'marcus@email.com', status:'yes', eventId:'e1' },
+    { id:'g2', name:'Jenna Ortiz', contact:'(813) 555-0142', status:'pending', eventId:'e1' },
+  ],
+  events: (saved && saved.events) || DEFAULT_EVENTS.slice(),
+  activeEventId: (saved && saved.activeEventId) || 'e1',
+  currentUser: (saved && saved.currentUser) || null,
+  chats: (saved && saved.chats) || {
+    v1: [
+      { from:'host', text:'Hi! Do you have availability for a Nov 14 wedding, and can you do a tasting beforehand?', time:'2 days ago' },
+      { from:'vendor', text:"Yes, that date is open for us! We'd love to set up a tasting — I'll follow up by email this week.", time:'2 days ago' },
+    ],
+  },
+  currentRsvpStatus: null,
+  editingVendorId: null,
+  editingEventId: null,
+  pendingAuthRole: null,
+};
+
+/* ======================================================================
+   MATCHING ENGINE
+====================================================================== */
+function calculateMatchScore(vendor, event, category) {
+  if (vendor.category !== category) return null;
+  const isDateBlocked = vendor.blockedDates.includes(event.date);
+  const sameCity = vendor.city.toLowerCase() === event.city.toLowerCase();
+  let locationScore = sameCity ? 100 : 70;
+
+  const req = event.servicesNeeded.find(s => s.category === category);
+  const targetBudget = req ? req.targetBudget : 1500;
+  let budgetScore = 60;
+  if (targetBudget >= vendor.priceMin && targetBudget <= vendor.priceMax) budgetScore = 100;
+  else if (targetBudget > vendor.priceMax) budgetScore = 95;
+  else if (targetBudget >= vendor.priceMin * 0.8) budgetScore = 75;
+  else budgetScore = 45;
+
+  let capacityScore = 100;
+  if (event.guestCount > vendor.maxGuestCapacity) capacityScore = 30;
+  else if (event.guestCount > vendor.maxGuestCapacity * 0.8) capacityScore = 90;
+
+  const hasStyle = vendor.styles.includes(event.styleTheme);
+  const styleScore = hasStyle ? 100 : 65;
+
+  let trustBonus = (vendor.rating / 5) * 90;
+  if (vendor.verifiedLevel === 'master_verified') trustBonus += 6;
+  if (vendor.verifiedLevel === 'licensed_insured') trustBonus += 3;
+  const qualityWeight = Math.min(100, Math.round(trustBonus));
+
+  if (isDateBlocked) {
+    return { vendor, overallScore: 22, reasons: [`Unavailable on ${event.date}`], blocked: true };
+  }
+
+  const overall = Math.round(locationScore*0.20 + budgetScore*0.25 + styleScore*0.20 + capacityScore*0.15 + qualityWeight*0.20);
+  const reasons = [];
+  if (sameCity) reasons.push(`Local to ${vendor.city}`);
+  if (budgetScore >= 90) reasons.push('Within Budget');
+  if (hasStyle) reasons.push(`${event.styleTheme} Specialist`);
+  if (vendor.rating >= 4.8) reasons.push(`Top Rated ${vendor.rating}★`);
+  if (vendor.verifiedLevel === 'master_verified' || vendor.verifiedLevel === 'licensed_insured') reasons.push('Verified & Insured');
+  if (vendor.isFounding) reasons.push('Founding Vendor');
+
+  return { vendor, overallScore: Math.min(99, Math.max(40, overall)), reasons, blocked:false };
+}
+
+function rankVendors(category) {
+  const event = getActiveEvent();
+  const visible = STATE.vendors.filter(v => v.listingStatus !== 'pending');
+  const pool = category === 'all'
+    ? visible
+    : visible.filter(v => v.category === category);
+  return pool
+    .map(v => calculateMatchScore(v, event, v.category))
+    .filter(Boolean)
+    .sort((a,b) => b.overallScore - a.overallScore);
+}
+
+/* ======================================================================
+   LICENSE / CREDENTIAL EXPIRY ENFORCEMENT
+====================================================================== */
+function isDateExpired(dateStr) {
+  if (!dateStr || dateStr === 'pending') return false;
+  const d = new Date(dateStr + 'T00:00:00');
+  if (isNaN(d.getTime())) return false;
+  return d < todayDate();
+}
+function isVendorSuspended(v) {
+  const c = v.credentials;
+  if (!c) return false;
+  if (c.type === 'catering_license') return isDateExpired(c.licenseExpiry);
+  if (c.type === 'venue_docs') return isDateExpired(c.fireSafetyExpiry);
+  return false;
+}
+function vendorSuspensionReason(v) {
+  const c = v.credentials;
+  if (c.type === 'catering_license') return `FL Catering License #${c.licenseNumber} expired ${c.licenseExpiry}`;
+  if (c.type === 'venue_docs') return `Fire Safety Inspection expired ${c.fireSafetyExpiry}`;
+  return 'A required credential has expired.';
+}
+
+/* ======================================================================
+   RENDER: NAV / ROLE SWITCH
+====================================================================== */
+function setRole(role) {
+  document.querySelectorAll('.role-tab').forEach(b => b.classList.toggle('active', b.dataset.role === role));
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.toggle('active', p.dataset.view === role));
+  if (role === 'vendor') { onCategoryChange(); renderMyListings(); renderVendorDashboard(); renderAvailabilityManager(); }
+  if (role === 'host') { renderEventSwitcher(); renderVendorGrid(); renderGuestPanel(); renderEventDetails(); }
+}
+
+/* ======================================================================
+   MOCK AUTH / SIGN-IN
+====================================================================== */
+function renderProfileChip() {
+  const el = document.getElementById('profileArea');
+  const u = STATE.currentUser;
+  if (!u) {
+    el.innerHTML = `<button class="btn-signin" onclick="openAuthModal('host')">Sign In / Sign Up</button>`;
+    return;
+  }
+  const initials = u.name.split(' ').map(p => p[0]).join('').slice(0,2).toUpperCase();
+  el.innerHTML = `
+    <div class="profile-chip">
+      <div class="avatar-circle">${initials}</div>
+      <div class="profile-meta"><b>${u.name}</b><span>${u.role === 'host' ? 'Host — Verified' : 'Vendor'}</span></div>
+      <button class="btn-signout" title="Sign out" onclick="signOut()">✕</button>
+    </div>`;
+}
+
+function openAuthModal(role) {
+  STATE.pendingAuthRole = role;
+  switchAuthTab(role);
+  document.getElementById('authOverlay').style.display = 'flex';
+}
+function closeAuthModal() { document.getElementById('authOverlay').style.display = 'none'; }
+function switchAuthTab(role) {
+  document.getElementById('authTabHost').classList.toggle('active', role === 'host');
+  document.getElementById('authTabVendor').classList.toggle('active', role === 'vendor');
+  document.getElementById('authFormHost').style.display = role === 'host' ? 'block' : 'none';
+  document.getElementById('authFormVendor').style.display = role === 'vendor' ? 'block' : 'none';
+}
+
+function submitHostAuth() {
+  const name = document.getElementById('authHostName').value.trim();
+  const email = document.getElementById('authHostEmail').value.trim();
+  const phone = document.getElementById('authHostPhone').value.trim();
+  if (!name || !email || !phone) { toast('Name, email and phone are all required for host verification.'); return; }
+  STATE.currentUser = { id: 'u' + Date.now(), name, email, phone, role: 'host' };
+  saveState();
+  closeAuthModal();
+  renderProfileChip();
+  toast(`Welcome, ${name} — email &amp; phone verified. You're in.`);
+  forceRole('host');
+}
+
+function submitVendorAuth() {
+  const name = document.getElementById('authVendorName').value.trim();
+  const email = document.getElementById('authVendorEmail').value.trim();
+  const category = document.getElementById('authVendorCategory').value;
+  if (!name || !email) { toast('Name and business email are required.'); return; }
+  // Fixed demo account id so the seeded catering listing (owned by this same id) shows up under
+  // "Your Published Listings" right away — this is mock auth, not a real account system.
+  STATE.currentUser = { id: DEMO_VENDOR_USER_ID, name, email, role: 'vendor', vendorCategory: category };
+  saveState();
+  closeAuthModal();
+  renderProfileChip();
+  toast(`Welcome, ${name} — you already have one listing live, add more below.`);
+  forceRole('vendor');
+}
+
+function signOut() {
+  STATE.currentUser = null;
+  saveState();
+  renderProfileChip();
+  forceRole('host');
+  toast('Signed out.');
+}
+
+function forceRole(role) {
+  document.querySelectorAll('.role-tab').forEach(b => b.classList.toggle('active', b.dataset.role === role));
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.toggle('active', p.dataset.view === role));
+  if (role === 'vendor') {
+    if (STATE.currentUser && STATE.currentUser.vendorCategory) document.getElementById('fCategory').value = STATE.currentUser.vendorCategory;
+    onCategoryChange(); renderMyListings(); renderVendorDashboard(); renderAvailabilityManager();
+  }
+  if (role === 'host') { renderEventSwitcher(); renderVendorGrid(); renderGuestPanel(); renderEventDetails(); }
+}
+
+/* ======================================================================
+   RENDER: HOST — BROWSE VIEW
+====================================================================== */
+function verifiedLabel(level) {
+  if (level === 'master_verified') return 'Master Verified — Licensed';
+  if (level === 'licensed_insured') return 'Licensed &amp; Insured';
+  if (level === 'identity_verified') return 'Identity Verified';
+  return 'Unverified';
+}
+
+function vcardHtml(match) {
+  const v = match.vendor;
+  const cat = CATEGORY_META[v.category];
+  const suspended = isVendorSuspended(v);
+  const disabled = match.blocked || suspended;
+  return `
+    <div class="vcard ${suspended ? 'is-suspended' : ''}">
+      <img class="vcard-photo" src="${v.photo}" alt="${v.businessName}" />
+      <div class="vcard-body">
+        <div class="vcard-top">
+          <div><div class="vcard-cat">${cat.label}</div><div class="vcard-name">${v.businessName}</div></div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+            <span class="match-badge">${match.overallScore}% Match</span>
+            ${v.isFounding ? '<span class="founding-badge">Founding</span>' : ''}
+          </div>
+        </div>
+        ${suspended ? `<span class="suspended-badge">⚠ Listing Suspended — Expired Credential</span>` : v.verifiedLevel !== 'unverified' ? `<div class="verified-row">✓ ${verifiedLabel(v.verifiedLevel)}</div>` : ''}
+        <div class="rating-row"><b>${v.rating}★</b> (${v.reviewCount} reviews) &nbsp;·&nbsp; ~${v.responseTimeMinutes}m response</div>
+        <div class="reason-tags">${match.reasons.slice(0,3).map(r => `<span class="reason-tag">${r}</span>`).join('')}</div>
+        <div class="vcard-foot">
+          <div class="price-range">$${(v.priceMin/1000).toFixed(1)}k–$${(v.priceMax/1000).toFixed(1)}k<span>per event</span></div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn-mini" onclick="openChat('${v.id}')" title="Optional — message before booking">💬</button>
+            <button class="btn-mini" ${disabled ? `disabled title="${suspended ? vendorSuspensionReason(v) : 'Unavailable on requested date'}"` : `onclick="openMatchMomentFor('${v.id}')"`}>${suspended ? 'Suspended' : match.blocked ? 'Unavailable' : 'View & Book'}</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderCategoryPills() {
+  const wrap = document.getElementById('categoryPills');
+  const cats = ['all', ...Object.keys(CATEGORY_META)];
+  wrap.innerHTML = cats.map(c => {
+    const label = c === 'all' ? `All Services (${STATE.vendors.length})` : CATEGORY_META[c].label;
+    return `<span class="pill ${STATE.activeCategory===c?'active':''}" onclick="selectCategory('${c}')">${label}</span>`;
+  }).join('');
+}
+function selectCategory(c) { STATE.activeCategory = c; renderCategoryPills(); renderVendorGrid(); }
+
+function renderVendorGrid() {
+  const grid = document.getElementById('vendorGrid');
+  const matches = rankVendors(STATE.activeCategory);
+  if (!matches.length) { grid.innerHTML = '<div class="match-empty">No vendors in this category yet.</div>'; return; }
+  grid.innerHTML = matches.map(vcardHtml).join('');
+  const catLabel = STATE.activeCategory === 'all' ? 'All Services' : CATEGORY_META[STATE.activeCategory].label;
+  document.getElementById('eventTitleLabel').textContent = `${catLabel} for ${getActiveEvent().title}`;
+}
+
+/* ======================================================================
+   RENDER: EVENT SWITCHER / MULTI-EVENT MANAGEMENT
+====================================================================== */
+let pastEventsOpen = false;
+function renderEventSwitcher() {
+  const row = document.getElementById('eventSwitchRow');
+  const active = getActiveEvents();
+  row.innerHTML = active.map(ev => `
+    <span class="event-pill ${ev.id === STATE.activeEventId ? 'active' : ''}" onclick="selectEvent('${ev.id}')">
+      <span class="type-dot"></span>${ev.title.length > 26 ? ev.title.slice(0,24) + '…' : ev.title}
+    </span>`).join('') +
+    `<button class="btn-add-event" ${active.length >= MAX_ACTIVE_EVENTS ? 'disabled' : ''} onclick="openCreateEventModal()">+ New Event</button>`;
+  document.getElementById('eventCapNote').textContent = active.length >= MAX_ACTIVE_EVENTS
+    ? `You're at the 3-active-event limit. Events automatically move to Past Events ${ARCHIVE_DAYS_AFTER} days after their date.`
+    : `${active.length} of ${MAX_ACTIVE_EVENTS} active events used.`;
+  const archived = getArchivedEvents();
+  document.getElementById('pastEventsToggle').style.display = archived.length ? 'inline-block' : 'none';
+  renderPastEvents();
+}
+function selectEvent(id) {
+  STATE.activeEventId = id;
+  saveState();
+  renderEventSwitcher();
+  STATE.activeCategory = 'all';
+  renderCategoryPills();
+  renderVendorGrid();
+  renderGuestPanel();
+  renderEventDetails();
+}
+
+/* ---- Event Details card (view + edit an event after it's created) ---- */
+function renderEventDetails() {
+  const card = document.getElementById('eventDetailsCard');
+  if (!card) return;
+  const ev = getActiveEvent();
+  if (!ev) { card.innerHTML = ''; return; }
+  const archived = isEventArchived(ev);
+  card.innerHTML = `
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+      <div>
+        <div class="vcard-cat" style="margin-bottom:6px;">${EVENT_TYPE_LABELS[ev.type] || 'Event'}</div>
+        <h3 style="font-family:var(--font-head); font-size:17px; margin:0 0 6px;">${ev.title}</h3>
+        <div class="rating-row" style="gap:12px;">
+          <span>📍 ${ev.city}, ${ev.state}</span><span>📅 ${ev.date}</span><span>👥 ${ev.guestCount} guests</span><span>🎨 ${ev.styleTheme}</span><span>💰 $${(ev.totalBudget || 0).toLocaleString()} budget</span>
+        </div>
+      </div>
+      ${archived ? '<span class="archived-tag">Archived</span>' : `<button class="btn-secondary" onclick="openEditEventModal('${ev.id}')">✎ Edit Event</button>`}
+    </div>
+  `;
+}
+
+function openEditEventModal(eventId) {
+  const ev = STATE.events.find(e => e.id === eventId);
+  if (!ev) return;
+  STATE.editingEventId = eventId;
+  document.getElementById('ceModalTitle').textContent = 'Edit Event';
+  document.getElementById('ceModalSub').textContent = 'Update your event details — vendor matching refreshes automatically.';
+  document.getElementById('ceSubmitBtn').textContent = 'Save Changes →';
+  document.getElementById('ceType').value = ev.type;
+  document.getElementById('ceTitle').value = ev.title;
+  document.getElementById('ceCity').value = ev.city;
+  document.getElementById('ceDate').value = ev.date;
+  document.getElementById('ceGuests').value = ev.guestCount;
+  document.getElementById('ceBudget').value = ev.totalBudget || 15000;
+  document.getElementById('ceStyle').value = ev.styleTheme;
+  document.getElementById('createEventOverlay').style.display = 'flex';
+}
+function togglePastEvents() {
+  pastEventsOpen = !pastEventsOpen;
+  document.getElementById('pastEventsList').style.display = pastEventsOpen ? 'block' : 'none';
+  document.getElementById('pastEventsToggle').textContent = pastEventsOpen ? 'Hide past / archived events ▴' : 'Show past / archived events ▾';
+}
+function renderPastEvents() {
+  const archived = getArchivedEvents();
+  document.getElementById('pastEventsList').innerHTML = archived.map(ev => `
+    <div class="past-event-row"><span>${ev.title} — ${ev.city}, ${ev.state} · ${ev.date}</span><span class="archived-tag">Archived</span></div>`).join('');
+}
+
+function openCreateEventModal() {
+  if (!STATE.currentUser || STATE.currentUser.role !== 'host') { openAuthModal('host'); return; }
+  if (getActiveEvents().length >= MAX_ACTIVE_EVENTS) { toast('Max 3 active events — wait for one to archive or complete it first.'); return; }
+  STATE.editingEventId = null;
+  document.getElementById('ceModalTitle').textContent = 'Create a New Event';
+  document.getElementById('ceModalSub').textContent = "Any event type welcome — PlanMyEvent isn't just for weddings.";
+  document.getElementById('ceSubmitBtn').textContent = 'Create Event & Start Matching →';
+  document.getElementById('ceType').value = 'wedding';
+  document.getElementById('ceTitle').value = '';
+  document.getElementById('ceCity').value = 'Tampa';
+  document.getElementById('ceDate').value = '';
+  document.getElementById('ceGuests').value = 50;
+  document.getElementById('ceBudget').value = 15000;
+  document.getElementById('ceStyle').value = 'Tropical Coastal';
+  document.getElementById('createEventOverlay').style.display = 'flex';
+}
+function closeCreateEventModal() { document.getElementById('createEventOverlay').style.display = 'none'; STATE.editingEventId = null; }
+
+// Relative share of the host's total budget each category typically needs — catering and venue
+// are the biggest line items, DJ/audio and florals the smallest. Sums to 5.8.
+const CATEGORY_BUDGET_WEIGHTS = { catering:2.2, photography:1.1, florist:0.6, dj_audio:0.5, venue:1.4 };
+
+function submitCreateEvent() {
+  const isEdit = !!STATE.editingEventId;
+  if (!isEdit && getActiveEvents().length >= MAX_ACTIVE_EVENTS) { toast('Max 3 active events reached.'); closeCreateEventModal(); return; }
+  const title = document.getElementById('ceTitle').value.trim();
+  const type = document.getElementById('ceType').value;
+  const city = document.getElementById('ceCity').value.trim() || 'Tampa';
+  const date = document.getElementById('ceDate').value;
+  const guestCount = Number(document.getElementById('ceGuests').value) || 50;
+  const totalBudget = Math.max(0, Number(document.getElementById('ceBudget').value) || 0);
+  const styleTheme = document.getElementById('ceStyle').value.trim() || 'Modern Minimalist';
+  if (!title || !date) { toast('Give your event a title and a date.'); return; }
+  if (!totalBudget) { toast('Enter a total event budget — it drives vendor matching.'); return; }
+  const weightSum = Object.values(CATEGORY_BUDGET_WEIGHTS).reduce((a,b) => a+b, 0);
+  const budgetBase = totalBudget / weightSum;
+  const servicesNeeded = Object.keys(CATEGORY_BUDGET_WEIGHTS).map(category => ({
+    category, targetBudget: Math.round(budgetBase * CATEGORY_BUDGET_WEIGHTS[category]),
+  }));
+
+  if (isEdit) {
+    const ev = STATE.events.find(e => e.id === STATE.editingEventId);
+    if (!ev) { toast('That event no longer exists.'); closeCreateEventModal(); return; }
+    Object.assign(ev, { type, title, city, date, guestCount, totalBudget, styleTheme, servicesNeeded });
+    STATE.activeEventId = ev.id;
+    STATE.editingEventId = null;
+  } else {
+    const newEvent = { id: 'e' + Date.now(), type, title, city, state: 'FL', date, guestCount, totalBudget, styleTheme, servicesNeeded };
+    STATE.events.push(newEvent);
+    STATE.activeEventId = newEvent.id;
+  }
+  saveState();
+  closeCreateEventModal();
+  renderEventSwitcher();
+  STATE.activeCategory = 'all';
+  renderCategoryPills();
+  renderVendorGrid();
+  renderGuestPanel();
+  renderEventDetails();
+  toast(isEdit ? `"${title}" updated — matches refreshed.` : `"${title}" created — matching against 5 vendor categories now.`);
+}
+
+function renderHeroStats() {
+  const totalVendors = STATE.vendors.filter(v => v.listingStatus !== 'pending').length;
+  const founding = STATE.vendors.filter(v => v.isFounding).length;
+  document.getElementById('heroStats').innerHTML = `
+    <div class="hero-stat"><b>${totalVendors}</b><span>Verified Vendors</span></div>
+    <div class="hero-stat"><b>${founding}</b><span>Founding Vendors</span></div>
+    <div class="hero-stat"><b>5</b><span>Categories Matched</span></div>
+  `;
+}
+
+/* ======================================================================
+   RENDER: MATCH MOMENT
+====================================================================== */
+let currentMatchVendorId = null;
+
+function creds_html(v) {
+  const c = v.credentials;
+  if (c.type === 'catering_license') {
+    let html = `<div class="license-note">🛡 FL Catering License #${c.licenseNumber} — verified with issuing authority (expires ${c.licenseExpiry})</div>`;
+    if (c.servesAlcohol) html += `<div class="license-note">🛡 FL Alcohol License #${c.alcoholLicenseNumber} — verified for on-site service</div>`;
+    return html;
+  }
+  if (c.type === 'venue_docs') {
+    return `<div class="license-note">🛡 Occupancy Certificate #${c.occupancyCertNumber} verified</div><div class="license-note">🛡 Fire Safety Inspection valid through ${c.fireSafetyExpiry}</div>`;
+  }
+  return `<div class="license-note">🛡 Business Registration #${c.businessRegNumber} · Insured (${c.insurancePolicyNumber}) · ${c.portfolioCount}-item portfolio on file</div>`;
+}
+
+function openMatchMomentFor(vendorId) {
+  currentMatchVendorId = vendorId;
+  const event = getActiveEvent();
+  const v = STATE.vendors.find(x => x.id === vendorId);
+  const cat = CATEGORY_META[v.category];
+  const suspended = isVendorSuspended(v);
+  let proposal = STATE.proposals.find(p => p.vendorId === vendorId);
+  if (!proposal) {
+    const mid = Math.round((v.priceMin + v.priceMax) / 2 / 50) * 50;
+    proposal = { id:'auto-'+vendorId, vendorId, category:v.category, quoteAmount: mid, depositRequired: Math.round(mid*0.25/50)*50, status:'sent',
+      deliverables:[`Full ${cat.label.toLowerCase()} service for ${event.guestCount} guests`, `On-site setup in ${event.city}`, 'All required licensing & cleanup included'] };
+  }
+  const deposit = proposal.depositRequired;
+  const dueNow = deposit;
+  const balance = proposal.quoteAmount - deposit;
+  const strike = v.rating < 4.6 || v.cancellations60d >= 2;
+
+  document.getElementById('matchMomentSub').textContent = `Full listing detail and the booking decision, side by side — nothing hidden behind another click.`;
+  document.getElementById('matchMomentBody').innerHTML = `
+    <div class="match-listing">
+      <img class="listing-photo" src="${v.photo}" alt="${v.businessName}" />
+      <div class="vcard-cat" style="margin-bottom:6px;">${cat.label}</div>
+      <h3 class="listing-name">${v.businessName}</h3>
+      ${suspended ? `<span class="suspended-badge" style="margin-bottom:4px; display:inline-block;">⚠ Listing Suspended</span>` : `<div class="verified-row" style="margin-bottom:4px;">✓ ${verifiedLabel(v.verifiedLevel)}</div>`}
+      <p class="listing-desc">${v.bio}</p>
+      ${creds_html(v)}
+      ${suspended ? `<div class="suspended-note">⚠ ${vendorSuspensionReason(v)} — bookings are blocked until the vendor renews and updates this listing.</div>` : ''}
+      ${strike ? `<div class="strike-note">⚠ Below the 4.6★ founding-cohort average and/or 2+ recent cancellations — still above the 4.2 delisting threshold, shown here for transparency, not hidden.</div>` : ''}
+      <div style="font-size:11.5px; color:var(--text-muted); margin-top:10px;"><b style="color:var(--text);">Included:</b> ${proposal.deliverables.join(' • ')}</div>
+      <button class="btn-secondary" style="margin-top:12px;" onclick="openChat('${v.id}')">💬 Message ${v.businessName} first <span class="optional-tag">Optional</span></button>
+    </div>
+    <div class="match-booking">
+      <div class="money-row"><span>Contract total</span><b>$${proposal.quoteAmount.toLocaleString()}</b></div>
+      <div class="money-row total"><span>Deposit to confirm <span class="due-badge">Due now</span></span><b>$${deposit.toLocaleString()}</b></div>
+      <div class="money-row"><span style="font-style:italic;">Balance due before event date <span class="due-badge later">Later</span></span><span>$${balance.toLocaleString()}</span></div>
+      <label class="terms-row"><input type="checkbox" id="agreeTerms" ${suspended ? 'disabled' : 'checked'} /> I agree to PlanMyEvent's Service Terms and Cancellation Policy.</label>
+      <button class="btn-primary" style="width:100%;" id="confirmBookingBtn" ${suspended ? 'disabled' : ''} onclick="confirmBooking('${vendorId}', ${dueNow}, ${proposal.quoteAmount}, ${deposit})">${suspended ? 'Booking Unavailable — Suspended' : `Confirm Booking — $${dueNow.toLocaleString()} →`}</button>
+    </div>
+  `;
+  document.getElementById('matchOverlay').style.display = 'flex';
+}
+function closeMatchMoment() {
+  document.getElementById('matchOverlay').style.display = 'none';
+  const body = document.getElementById('matchMomentBody');
+  if (body) body.classList.remove('confirm-mode');
+  renderVendorGrid();
+  renderHeroStats();
+  renderEventDetails();
+}
+
+function confirmBooking(vendorId, dueNow, total, deposit) {
+  if (!STATE.currentUser || STATE.currentUser.role !== 'host') {
+    closeMatchMoment();
+    openAuthModal('host');
+    toast('Quick host verification is required before confirming a booking.');
+    return;
+  }
+  const v = STATE.vendors.find(x => x.id === vendorId);
+  if (isVendorSuspended(v)) { toast('This listing is suspended — booking is blocked until the vendor renews their credentials.'); return; }
+  const event = getActiveEvent();
+  const btn = document.getElementById('confirmBookingBtn');
+  const checked = document.getElementById('agreeTerms').checked;
+  if (!checked) { toast('Please agree to the terms to continue.'); return; }
+  btn.disabled = true; btn.innerHTML = 'Locking deposit in escrow…';
+  setTimeout(() => {
+    const bookingId = 'b'+Date.now();
+    STATE.bookings.push({ id:bookingId, vendorId, category:v.category, totalAmount:total, status:'confirmed', eventDate:event.date, reviewed:false });
+    const prop = STATE.proposals.find(p => p.vendorId === vendorId);
+    if (prop) prop.status = 'booked';
+    saveState();
+    renderBookingConfirmation(v, event, deposit, dueNow, total, bookingId);
+  }, 650);
+}
+
+function renderBookingConfirmation(v, event, deposit, dueNow, total, bookingId) {
+  const balance = total - deposit;
+  document.getElementById('matchMomentSub').textContent = 'Your booking is confirmed and your deposit is protected in escrow.';
+  const body = document.getElementById('matchMomentBody');
+  body.classList.add('confirm-mode');
+  body.innerHTML = `
+    <div class="booking-confirm">
+      <div class="big-check">🎉</div>
+      <h3 style="font-family:var(--font-head); font-size:20px; margin:6px 0 4px;">Booking Confirmed!</h3>
+      <p style="font-size:13px; color:var(--text-muted); margin:0 0 22px;">${v.businessName} is booked for <b style="color:var(--text);">${event.title}</b> on ${event.date}. Confirmation #${bookingId.replace('b','PME-')}</p>
+      <div class="card-surface">
+        <div class="money-row"><span>Vendor</span><b>${v.businessName}</b></div>
+        <div class="money-row"><span>Charged today</span><b>$${dueNow.toLocaleString()}</b></div>
+        <div class="money-row"><span>Balance due before event date</span><b>$${balance.toLocaleString()}</b></div>
+        <div class="money-row total"><span>Contract total</span><b>$${total.toLocaleString()}</b></div>
+      </div>
+      <button class="btn-primary" style="width:100%; max-width:340px;" onclick="closeMatchMoment()">← Back to Dashboard</button>
+    </div>
+  `;
+}
+
+/* ======================================================================
+   VENDOR VIEW — PRODUCER LISTING
+====================================================================== */
+function onCategoryChange() {
+  const cat = document.getElementById('fCategory').value;
+  const type = CATEGORY_META[cat].credType;
+  const section = document.getElementById('credentialSection');
+  if (type === 'catering_license') {
+    section.innerHTML = `
+      <div class="field"><label>Florida Food Service / Catering License #</label><input type="text" id="fLicenseNumber" placeholder="FL-CAT-XXXXX" oninput="renderListingPreview()" /></div>
+      <div class="field"><label>License Expiry</label><input type="date" id="fLicenseExpiry" /></div>
+      <div class="check-row"><input type="checkbox" id="fServesAlcohol" onchange="toggleAlcoholField()" /><span>This listing also serves alcohol (requires FL alcohol license)</span></div>
+      <div class="field" id="alcoholField" style="display:none;"><label>Florida Alcohol License #</label><input type="text" id="fAlcoholLicense" placeholder="FL-ALC-XXXXX" /></div>
+      <div class="hint">Required by the Governance Charter before this listing can go live — verified with the issuing county authority.</div>`;
+  } else if (type === 'venue_docs') {
+    section.innerHTML = `
+      <div class="field"><label>Occupancy Certificate #</label><input type="text" id="fOccupancy" placeholder="OCC-TPA-XXXX" oninput="renderListingPreview()" /></div>
+      <div class="field"><label>Fire Safety Inspection Expiry</label><input type="date" id="fFireSafety" /></div>
+      <div class="hint">Venues require both on file. An expired fire safety cert suspends new bookings per the charter.</div>`;
+  } else {
+    section.innerHTML = `
+      <div class="field"><label>Business Registration #</label><input type="text" id="fBizReg" placeholder="FL-BR-XXXXXX" oninput="renderListingPreview()" /></div>
+      <div class="field"><label>Liability Insurance Policy #</label><input type="text" id="fInsurance" placeholder="GL-XXXXX-FL" /></div>
+      <div class="check-row"><input type="checkbox" id="fIdVerified" /><span>Government ID verified on file</span></div>
+      <div class="field"><label>Portfolio Items</label><input type="number" id="fPortfolioCount" value="5" min="0" oninput="renderListingPreview()" /><div class="hint" id="portfolioHint"></div></div>`;
+  }
+  renderListingPreview();
+  renderVendorDashboard();
+}
+
+function toggleAlcoholField() {
+  const on = document.getElementById('fServesAlcohol').checked;
+  document.getElementById('alcoholField').style.display = on ? 'block' : 'none';
+}
+
+function currentDraftVendor() {
+  const cat = document.getElementById('fCategory').value;
+  const type = CATEGORY_META[cat].credType;
+  const name = document.getElementById('fBusinessName').value || 'Your New Listing';
+  const priceMin = Number(document.getElementById('fPriceMin').value) || 0;
+  const priceMax = Number(document.getElementById('fPriceMax').value) || 0;
+  let credentials = { type };
+  let portfolioCount = 5;
+  if (type === 'catering_license') {
+    credentials.licenseNumber = document.getElementById('fLicenseNumber').value || 'pending';
+    credentials.licenseExpiry = document.getElementById('fLicenseExpiry').value || 'pending';
+    credentials.servesAlcohol = document.getElementById('fServesAlcohol').checked;
+    credentials.alcoholLicenseNumber = document.getElementById('fAlcoholLicense') ? document.getElementById('fAlcoholLicense').value : '';
+  } else if (type === 'venue_docs') {
+    credentials.occupancyCertNumber = document.getElementById('fOccupancy').value || 'pending';
+    credentials.fireSafetyExpiry = document.getElementById('fFireSafety').value || 'pending';
+  } else {
+    credentials.businessRegNumber = document.getElementById('fBizReg').value || 'pending';
+    credentials.insurancePolicyNumber = document.getElementById('fInsurance').value || 'pending';
+    credentials.idVerified = document.getElementById('fIdVerified').checked;
+    portfolioCount = Number(document.getElementById('fPortfolioCount').value) || 0;
+    credentials.portfolioCount = portfolioCount;
+  }
+  return {
+    id: 'draft', businessName: name, category: cat, city: document.getElementById('fCity').value || 'Tampa', state:'FL',
+    photo: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80',
+    bio: document.getElementById('fDescription').value || 'Describe your service above to see it appear here.',
+    priceMin, priceMax, maxGuestCapacity: 300,
+    styles: [getActiveEvent().styleTheme], verifiedLevel: 'unverified', rating: 0, reviewCount: 0,
+    responseTimeMinutes: 30, onTimeRate: 0, cancellations60d: 0, isFounding: false,
+    blockedDates: [],
+    credentials,
+  };
+}
+
+function renderListingPreview() {
+  const v = currentDraftVendor();
+  const cat = CATEGORY_META[v.category];
+  document.getElementById('listingPreviewCard').innerHTML = `
+    <div class="vcard">
+      <img class="vcard-photo" src="${v.photo}" alt="preview" />
+      <div class="vcard-body">
+        <div class="vcard-top">
+          <div><div class="vcard-cat">${cat.label}</div><div class="vcard-name">${v.businessName}</div></div>
+          <span class="match-badge">New</span>
+        </div>
+        <div class="rating-row">No reviews yet &nbsp;·&nbsp; ~${v.responseTimeMinutes}m target response</div>
+        <div class="reason-tags"><span class="reason-tag">Pending Verification</span></div>
+        <p style="font-size:11.5px; color:var(--text-muted); margin:2px 0 0;">${v.bio}</p>
+        <div class="vcard-foot">
+          <div class="price-range">$${(v.priceMin/1000).toFixed(1)}k–$${(v.priceMax/1000).toFixed(1)}k<span>per event</span></div>
+          <button class="btn-mini" disabled>Preview only</button>
+        </div>
+      </div>
+    </div>`;
+  if (v.credentials.type === 'standard') {
+    const hint = document.getElementById('portfolioHint');
+    if (hint) hint.innerHTML = v.credentials.portfolioCount < 5
+      ? `<span style="color:var(--warn); font-weight:600;">Charter requires a minimum 5-event portfolio before this listing can go live (${v.credentials.portfolioCount}/5).</span>`
+      : `Meets the 5-event minimum required to publish.`;
+  }
+}
+
+function validateListing(v) {
+  if (!document.getElementById('fBusinessName').value.trim()) return 'Business name is required.';
+  if (v.priceMin <= 0 || v.priceMax <= 0 || v.priceMax < v.priceMin) return 'Enter a valid price range.';
+  const c = v.credentials;
+  if (c.type === 'catering_license') {
+    if (!c.licenseNumber || c.licenseNumber === 'pending') return 'Florida Catering License # is required for this category.';
+    if (c.servesAlcohol && (!c.alcoholLicenseNumber)) return 'Alcohol service requires a Florida alcohol license number.';
+  } else if (c.type === 'venue_docs') {
+    if (!c.occupancyCertNumber || c.occupancyCertNumber === 'pending') return 'Occupancy certificate # is required for venues.';
+  } else {
+    if (!c.businessRegNumber || c.businessRegNumber === 'pending') return 'Business registration # is required.';
+    if (c.portfolioCount < 5) return 'A minimum 5-event portfolio is required before publishing (per the Governance Charter).';
+  }
+  return null;
+}
+
+function publishListing() {
+  if (!STATE.currentUser || STATE.currentUser.role !== 'vendor') { openAuthModal('vendor'); return; }
+  const v = currentDraftVendor();
+  const err = validateListing(v);
+  if (err) { toast('⚠ ' + err); return; }
+  if (STATE.editingVendorId) {
+    const idx = STATE.vendors.findIndex(x => x.id === STATE.editingVendorId);
+    if (idx > -1) {
+      const existing = STATE.vendors[idx];
+      v.id = existing.id; v.ownerUserId = existing.ownerUserId;
+      v.verifiedLevel = existing.verifiedLevel; v.rating = existing.rating; v.reviewCount = existing.reviewCount;
+      v.responseTimeMinutes = existing.responseTimeMinutes; v.onTimeRate = existing.onTimeRate; v.cancellations60d = existing.cancellations60d;
+      v.isFounding = existing.isFounding;
+      v.blockedDates = existing.blockedDates || []; // availability is managed separately — editing a listing never touches it
+      v.listingStatus = existing.listingStatus;
+      STATE.vendors[idx] = v;
+      toast(`"${v.businessName}" updated — changes are live for hosts immediately.`);
+    }
+    STATE.editingVendorId = null;
+    document.getElementById('editModeBanner').style.display = 'none';
+  } else {
+    v.id = 'vnew-' + Date.now();
+    v.ownerUserId = STATE.currentUser.id;
+    v.listingStatus = 'pending';
+    STATE.vendors.push(v);
+    toast(`"${v.businessName}" submitted — running automated license & credential verification…`);
+    const newVendorId = v.id;
+    setTimeout(() => {
+      const rec = STATE.vendors.find(x => x.id === newVendorId);
+      if (!rec || rec.listingStatus !== 'pending') return; // edited/removed before verification finished
+      rec.listingStatus = 'live';
+      saveState();
+      renderCategoryPills(); renderVendorGrid(); renderHeroStats(); renderMyListings(); renderVendorDashboard(); renderAvailabilityManager();
+      toast(`✓ "${rec.businessName}" passed verification — now live to hosts browsing ${CATEGORY_META[rec.category].label}.`);
+    }, 3200);
+  }
+  saveState();
+  renderCategoryPills(); renderVendorGrid(); renderHeroStats(); renderMyListings(); renderVendorDashboard(); renderAvailabilityManager();
+}
+
+function renderMyListings() {
+  const el = document.getElementById('myListingsList');
+  if (!STATE.currentUser || STATE.currentUser.role !== 'vendor') {
+    el.innerHTML = `<div class="dash-locked">Sign in as a vendor to publish, edit and track your own listings.<br><button class="btn-signin" onclick="openAuthModal('vendor')">Sign In / Sign Up</button></div>`;
+    return;
+  }
+  const own = STATE.vendors.filter(v => v.ownerUserId === STATE.currentUser.id);
+  if (!own.length) { el.textContent = "You haven't published a listing yet — fill out the form and it'll appear here and instantly show up in the Host browse view."; return; }
+  el.innerHTML = own.map(v => {
+    const pending = v.listingStatus === 'pending';
+    const suspended = !pending && isVendorSuspended(v);
+    const statusClass = pending ? 'pending' : suspended ? 'no' : 'yes';
+    const statusLabel = pending ? 'Verifying…' : suspended ? 'Suspended' : 'Live';
+    return `<div>
+      ${pending ? `<div class="listing-warn-banner" style="background:#FBF3E4; border-color:#f0e0c4; color:var(--warn);"><span>⏳ Running automated license &amp; credential verification — not yet visible to hosts.</span></div>` : ''}
+      ${suspended ? `<div class="listing-warn-banner"><span>⚠ ${vendorSuspensionReason(v)}</span><button class="btn-secondary" onclick="editListing('${v.id}')">Renew &amp; Edit</button></div>` : ''}
+      <div class="guest-row"><span>${v.businessName}</span>
+        <span style="display:flex; align-items:center; gap:8px;">
+          <span class="status-badge ${statusClass}">${statusLabel}</span>
+          <button class="btn-mini" onclick="editListing('${v.id}')">Edit Listing</button>
+        </span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ======================================================================
+   VENDOR AVAILABILITY — managed independently from publishing a listing
+====================================================================== */
+function renderAvailabilityManager() {
+  const wrap = document.getElementById('availabilityManagerList');
+  if (!wrap) return;
+  if (!STATE.currentUser || STATE.currentUser.role !== 'vendor') {
+    wrap.innerHTML = `<div class="dash-locked">Sign in as a vendor to manage availability.<br><button class="btn-signin" onclick="openAuthModal('vendor')">Sign In / Sign Up</button></div>`;
+    return;
+  }
+  const own = STATE.vendors.filter(v => v.ownerUserId === STATE.currentUser.id);
+  if (!own.length) { wrap.innerHTML = `Publish a listing first — then manage the dates you're not available here.`; return; }
+  wrap.innerHTML = own.map(v => `
+    <div style="margin-bottom:14px; padding-bottom:14px; border-bottom:1px dashed var(--divider);">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+        <b style="font-size:12.5px; color:var(--text);">${v.businessName}</b>
+        <span class="vcard-cat">${CATEGORY_META[v.category].label}</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-bottom:8px;">
+        <input type="date" id="availInput-${v.id}" style="flex:1;" />
+        <button type="button" class="btn-secondary" onclick="addVendorBlockedDate('${v.id}')">Add</button>
+      </div>
+      <div class="chip-row">
+        ${(v.blockedDates && v.blockedDates.length) ? v.blockedDates.map(d => `<span class="chip">${d} <button onclick="removeVendorBlockedDate('${v.id}','${d}')">✕</button></span>`).join('') : `<span style="font-size:11px; color:var(--text-muted);">No blocked dates — you're shown as available for every date hosts request.</span>`}
+      </div>
+    </div>`).join('');
+}
+
+function addVendorBlockedDate(vendorId) {
+  const input = document.getElementById('availInput-' + vendorId);
+  if (!input || !input.value) return;
+  const v = STATE.vendors.find(x => x.id === vendorId);
+  if (!v) return;
+  if (!v.blockedDates) v.blockedDates = [];
+  if (!v.blockedDates.includes(input.value)) v.blockedDates.push(input.value);
+  input.value = '';
+  saveState();
+  renderAvailabilityManager();
+  renderVendorGrid();
+  toast('Availability updated — live for hosts immediately.');
+}
+
+function removeVendorBlockedDate(vendorId, date) {
+  const v = STATE.vendors.find(x => x.id === vendorId);
+  if (!v) return;
+  v.blockedDates = (v.blockedDates || []).filter(d => d !== date);
+  saveState();
+  renderAvailabilityManager();
+  renderVendorGrid();
+  toast('Availability updated — live for hosts immediately.');
+}
+
+function editListing(vendorId) {
+  const v = STATE.vendors.find(x => x.id === vendorId);
+  if (!v) return;
+  STATE.editingVendorId = vendorId;
+  document.getElementById('editModeBanner').style.display = 'flex';
+  document.getElementById('fBusinessName').value = v.businessName;
+  document.getElementById('fCategory').value = v.category;
+  onCategoryChange();
+  document.getElementById('fCity').value = v.city;
+  document.getElementById('fDescription').value = v.bio;
+  document.getElementById('fPriceMin').value = v.priceMin;
+  document.getElementById('fPriceMax').value = v.priceMax;
+  const c = v.credentials;
+  if (c.type === 'catering_license') {
+    document.getElementById('fLicenseNumber').value = c.licenseNumber || '';
+    document.getElementById('fLicenseExpiry').value = c.licenseExpiry !== 'pending' ? c.licenseExpiry : '';
+    document.getElementById('fServesAlcohol').checked = !!c.servesAlcohol;
+    toggleAlcoholField();
+    if (document.getElementById('fAlcoholLicense')) document.getElementById('fAlcoholLicense').value = c.alcoholLicenseNumber || '';
+  } else if (c.type === 'venue_docs') {
+    document.getElementById('fOccupancy').value = c.occupancyCertNumber || '';
+    document.getElementById('fFireSafety').value = c.fireSafetyExpiry !== 'pending' ? c.fireSafetyExpiry : '';
+  } else {
+    document.getElementById('fBizReg').value = c.businessRegNumber || '';
+    document.getElementById('fInsurance').value = c.insurancePolicyNumber || '';
+    document.getElementById('fIdVerified').checked = !!c.idVerified;
+    document.getElementById('fPortfolioCount').value = c.portfolioCount || 5;
+  }
+  renderListingPreview();
+  document.getElementById('listingLayout').scrollIntoView({ behavior:'smooth', block:'start' });
+  toast(`Editing "${v.businessName}" — update and republish below.`);
+}
+function cancelEditListing() {
+  STATE.editingVendorId = null;
+  document.getElementById('editModeBanner').style.display = 'none';
+  toast('Edit cancelled.');
+}
+
+function renderVendorDashboard() {
+  const leadsEl = document.getElementById('vendorLeadsList');
+  const quotesEl = document.getElementById('vendorQuotesList');
+  const bookingsEl = document.getElementById('vendorBookingsList');
+  if (!STATE.currentUser || STATE.currentUser.role !== 'vendor') {
+    const lockedHtml = `<div class="dash-locked">Sign in as a vendor to see this.<br><button class="btn-signin" onclick="openAuthModal('vendor')">Sign In / Sign Up</button></div>`;
+    leadsEl.innerHTML = lockedHtml; quotesEl.innerHTML = ''; bookingsEl.innerHTML = '';
+    return;
+  }
+  const cat = document.getElementById('fCategory') ? document.getElementById('fCategory').value : (STATE.currentUser.vendorCategory || 'catering');
+
+  const leads = getActiveEvents().map(ev => ({ ev, req: ev.servicesNeeded.find(s => s.category === cat) })).filter(x => x.req);
+  leadsEl.innerHTML = leads.length ? leads.map(({ev, req}) => `
+    <div class="guest-row"><span><b>${ev.title}</b><br><span style="color:var(--text-muted);">${ev.city}, ${ev.state} · ${ev.date} · Budget $${req.targetBudget.toLocaleString()}</span></span></div>`).join('')
+    : `<div style="color:var(--text-muted);">No open leads for ${CATEGORY_META[cat].label} right now.</div>`;
+
+  const quotes = STATE.proposals.filter(p => p.category === cat);
+  quotesEl.innerHTML = quotes.length ? quotes.map(p => `
+    <div class="guest-row"><span>Quote — $${p.quoteAmount.toLocaleString()} (deposit $${p.depositRequired.toLocaleString()})</span><span class="status-badge ${p.status === 'booked' ? 'yes' : 'pending'}">${p.status === 'booked' ? 'Booked' : 'Sent'}</span></div>`).join('')
+    : `<div style="color:var(--text-muted);">No quotes sent yet in ${CATEGORY_META[cat].label}.</div>`;
+
+  const bookings = STATE.bookings.filter(b => b.category === cat);
+  bookingsEl.innerHTML = bookings.length ? bookings.map(b => `
+    <div class="guest-row"><span>Booking — $${b.totalAmount.toLocaleString()} · ${b.eventDate}</span><span class="status-badge ${b.status === 'completed' ? 'yes' : 'maybe'}">${b.status}</span></div>`).join('')
+    : `<div style="color:var(--text-muted);">No bookings won yet in ${CATEGORY_META[cat].label}.</div>`;
+}
+
+/* ======================================================================
+   GUEST / RSVP LOOP
+====================================================================== */
+function guestsForActiveEvent() {
+  const id = STATE.activeEventId;
+  return STATE.guests.filter(g => !g.eventId || g.eventId === id);
+}
+function renderGuestPanel() {
+  const list = guestsForActiveEvent();
+  const yes = list.filter(g => g.status === 'yes').length;
+  const no = list.filter(g => g.status === 'no').length;
+  const maybe = list.filter(g => g.status === 'maybe').length;
+  const pending = list.filter(g => g.status === 'pending').length;
+  document.getElementById('guestPanel').innerHTML = `
+    <div class="guest-tally">
+      <div class="tally-chip"><b>${yes}</b><span>Attending</span></div>
+      <div class="tally-chip"><b>${maybe}</b><span>Maybe</span></div>
+      <div class="tally-chip"><b>${no}</b><span>Can't Make It</span></div>
+      <div class="tally-chip"><b>${pending}</b><span>Awaiting RSVP</span></div>
+    </div>
+    ${list.length ? list.map(g => `<div class="guest-row"><span>${g.name} <span style="color:var(--text-muted);">— ${g.contact}</span></span><span class="status-badge ${g.status}">${g.status}</span></div>`).join('') : '<div style="color:var(--text-muted); font-size:12.5px;">No guests added to this event yet.</div>'}
+  `;
+}
+
+function openInviteModal() {
+  if (!STATE.currentUser || STATE.currentUser.role !== 'host') { openAuthModal('host'); return; }
+  renderInviteGuestList();
+  document.getElementById('inviteOverlay').style.display = 'flex';
+}
+function closeInviteModal() { document.getElementById('inviteOverlay').style.display = 'none'; }
+
+function inviteLinkSlug() {
+  const ev = getActiveEvent();
+  return ev.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '-' + ev.id;
+}
+function renderInviteGuestList() {
+  const ev = getActiveEvent();
+  const link = `https://planmyevent.app/rsvp/${inviteLinkSlug()}`;
+  const linkField = document.getElementById('inviteLinkField');
+  if (linkField) linkField.value = link;
+  document.getElementById('inviteGuestList').innerHTML = guestsForActiveEvent().map(g => `
+    <div class="guest-row">
+      <span>${g.name}</span>
+      <span style="display:flex; gap:6px;">
+        <a href="sms:?&body=${encodeURIComponent(`You're invited to ${ev.title}! RSVP here: ${link}`)}" class="btn-mini" style="text-decoration:none;">Text</a>
+        <a href="mailto:?subject=${encodeURIComponent(`You're invited to ${ev.title}`)}&body=${encodeURIComponent(`RSVP here: ${link}`)}" class="btn-mini" style="text-decoration:none;">Email</a>
+      </span>
+    </div>`).join('');
+}
+
+function addGuest() {
+  const name = document.getElementById('fGuestName').value.trim();
+  const contact = document.getElementById('fGuestContact').value.trim();
+  if (!name || !contact) { toast('Add a name and a phone or email.'); return; }
+  STATE.guests.push({ id:'g'+Date.now(), name, contact, status:'pending', eventId: STATE.activeEventId });
+  saveState();
+  document.getElementById('fGuestName').value = ''; document.getElementById('fGuestContact').value = '';
+  renderInviteGuestList(); renderGuestPanel();
+  toast(`${name} added to your guest list.`);
+}
+
+function copyInviteLink() {
+  const field = document.getElementById('inviteLinkField');
+  field.select();
+  try { document.execCommand('copy'); toast('Invite link copied.'); } catch (e) { toast('Link ready to copy.'); }
+}
+
+function openGuestPreview() {
+  const ev = getActiveEvent();
+  document.getElementById('rsvpEventName').textContent = `You're invited to: ${ev.title}`;
+  document.getElementById('rsvpEventDetails').innerHTML = `<span>📍 ${ev.city}, ${ev.state}</span><span>📅 ${ev.date}</span><span>🌴 ${ev.styleTheme}</span>`;
+  document.getElementById('rsvpOverlay').style.display = 'block';
+  document.getElementById('rsvpFormWrap').style.display = 'block';
+  document.getElementById('rsvpSuccessWrap').style.display = 'none';
+  STATE.currentRsvpStatus = null;
+  document.querySelectorAll('.rsvp-opt').forEach(o => o.classList.remove('selected'));
+  window.scrollTo(0,0);
+}
+function closeGuestPreview() { document.getElementById('rsvpOverlay').style.display = 'none'; }
+function selectRsvp(v) {
+  STATE.currentRsvpStatus = v;
+  document.querySelectorAll('.rsvp-opt').forEach(o => o.classList.toggle('selected', o.dataset.v === v));
+}
+function submitRsvp() {
+  const name = document.getElementById('rGuestName').value.trim() || 'Guest';
+  if (!STATE.currentRsvpStatus) { toast('Choose whether you can attend.'); return; }
+  STATE.guests.push({ id:'g'+Date.now(), name, contact:'via RSVP link', status: STATE.currentRsvpStatus, eventId: STATE.activeEventId });
+  saveState();
+  renderGuestPanel();
+  document.getElementById('rsvpThanksName').textContent = name;
+  document.getElementById('rsvpFormWrap').style.display = 'none';
+  document.getElementById('rsvpSuccessWrap').style.display = 'block';
+}
+
+/* ======================================================================
+   OPTIONAL HOST ↔ VENDOR CHAT
+====================================================================== */
+let currentChatVendorId = null;
+const VENDOR_AUTO_REPLIES = [
+  "Thanks for reaching out! Yes, we'd love to talk through your event — what date are you working with?",
+  "Great question — happy to send over more details. Feel free to view the full listing and book whenever you're ready, no pressure.",
+  "We can definitely work with that. Let us know if you'd like a custom quote before booking.",
+];
+function openChat(vendorId) {
+  currentChatVendorId = vendorId;
+  const v = STATE.vendors.find(x => x.id === vendorId);
+  document.getElementById('chatVendorName').textContent = `Message ${v.businessName}`;
+  if (!STATE.chats[vendorId]) STATE.chats[vendorId] = [];
+  renderChatThread();
+  document.getElementById('chatOverlay').style.display = 'flex';
+}
+function closeChat() { document.getElementById('chatOverlay').style.display = 'none'; }
+function renderChatThread() {
+  const thread = STATE.chats[currentChatVendorId] || [];
+  const el = document.getElementById('chatThread');
+  el.innerHTML = thread.length ? thread.map(m => `<div class="chat-msg ${m.from}">${m.text}<span class="chat-time">${m.time}</span></div>`).join('')
+    : `<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:16px 0;">Say hello — this is completely optional and never required before booking.</div>`;
+  el.scrollTop = el.scrollHeight;
+}
+function sendChatMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  if (!STATE.chats[currentChatVendorId]) STATE.chats[currentChatVendorId] = [];
+  STATE.chats[currentChatVendorId].push({ from:'host', text, time:'Just now' });
+  input.value = '';
+  renderChatThread();
+  saveState();
+  setTimeout(() => {
+    const reply = VENDOR_AUTO_REPLIES[Math.floor(Math.random()*VENDOR_AUTO_REPLIES.length)];
+    STATE.chats[currentChatVendorId].push({ from:'vendor', text:reply, time:'Just now' });
+    renderChatThread();
+    saveState();
+  }, 800);
+}
+
+/* ======================================================================
+   TOAST
+====================================================================== */
+let toastTimer = null;
+function toast(msg) {
+  let el = document.getElementById('appToast');
+  if (el) el.remove();
+  el = document.createElement('div');
+  el.id = 'appToast'; el.className = 'toast';
+  el.innerHTML = `<span class="dot"></span><span>${msg}</span>`;
+  document.body.appendChild(el);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.remove(), 3800);
+}
+
+/* ======================================================================
+   INIT
+====================================================================== */
+renderProfileChip();
+renderEventSwitcher();
+renderCategoryPills();
+renderVendorGrid();
+renderHeroStats();
+renderGuestPanel();
+renderEventDetails();
+onCategoryChange();
+</script>
+
+</body>
+</html>
